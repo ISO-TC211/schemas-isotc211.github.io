@@ -1,0 +1,26 @@
+= ISO/TC 211 XML Schemas site: schemas.isotc211.org
+
+image:https://travis-ci.com/ISO-TC211/schemas.isotc211.org.svg?branch=master[
+	Build Status, link="https://travis-ci.com/ISO-TC211/schemas.isotc211.org"]
+
+== Introduction
+
+The ISO/TC 211 XML Schemas site is used to publish XML schemas
+published by ISO/TC 211 standards.
+
+This repository is used to build and deploy the
+https://schemas.isotc211.org site.
+
+The site is managed by ISO/TC 211.
+
+
+== Building the site
+
+[source,sh]
+----
+# removes site artifacts
+make clean
+
+# makes _site
+make all
+----
