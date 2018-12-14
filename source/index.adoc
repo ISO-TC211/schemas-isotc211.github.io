@@ -1,0 +1,25 @@
+---
+layout: home
+permalink: /
+---
+== General
+
+Welcome to the ISO/TC 211 XML schema repository.
+
+== Usage
+
+Each part of each standard has a directory like: https://schemas.isotc211.org/StandardNumber/PartNumber/NamespacePrefix/Version.
+
+For example:
+
+* https://schemas.isotc211.org/19110/fcc/1.0/
+* https://schemas.isotc211.org/19115/-3/cit/1.0
+* https://schemas.isotc211.org/19157/-2/mdq/1.0
+
+== Maintenance
+
+Comments, suggestions, change requests and revisions are managed in the https://github.com/ISO-TC211/XML[GitHub repository] for the ISO/TC 211 XML Maintenance Group (XMG)
+
+For more information, please visit the https://committee.iso.org/home/tc211[ISO/TC 211 committee page].
+
+This site is managed by ISO/TC 211 XML Maintenance Group (XML) and Ribose.
