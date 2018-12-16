@@ -12,9 +12,9 @@ Each part of each standard has a directory like: https://schemas.isotc211.org/St
 
 For example:
 
-* https://schemas.isotc211.org/19110/fcc/1.0/
-* https://schemas.isotc211.org/19115/-3/cit/1.0
-* https://schemas.isotc211.org/19157/-2/mdq/1.0
+* link:19110/fcc/1.0/[]
+* link:19115/-3/cit/1.0[]
+* link:19157/-2/mdq/1.0[]
 
 == Maintenance
 

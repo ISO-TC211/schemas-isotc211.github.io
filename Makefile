@@ -22,4 +22,4 @@ update-init:
 update-modules:
 	git submodule foreach git pull origin master
 
-.PHONY: all update-init update-modules
+.PHONY: all clean serve update-init update-modules
