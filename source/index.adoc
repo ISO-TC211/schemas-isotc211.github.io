@@ -2,10 +2,16 @@
 layout: home
 permalink: /
 ---
+:page-liquid:
+
+
+[.section]
 == General
 
 Welcome to the ISO/TC 211 XML schema repository.
 
+
+[.section]
 == Usage
 
 Each part of each standard has a directory like: https://schemas.isotc211.org/StandardNumber/PartNumber/NamespacePrefix/Version.
@@ -16,6 +22,8 @@ For example:
 * link:19115/-3/cit/1.0[]
 * link:19157/-2/mdq/1.0[]
 
+
+[.section]
 == Maintenance
 
 Comments, suggestions, change requests and revisions are managed in the https://github.com/ISO-TC211/XML[GitHub repository] for the ISO/TC 211 XML Maintenance Group (XMG)
