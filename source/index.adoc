@@ -6,12 +6,6 @@ permalink: /
 
 
 [.section]
-== General
-
-Welcome to the ISO/TC 211 XML schema repository.
-
-
-[.section]
 == Usage
 
 Each part of each standard has a directory like: https://schemas.isotc211.org/StandardNumber/PartNumber/NamespacePrefix/Version.
