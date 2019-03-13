@@ -26,8 +26,12 @@ For example:
 [.section]
 == Maintenance
 
-Comments, suggestions, change requests and revisions are managed in the https://github.com/ISO-TC211/XML[GitHub repository] for the ISO/TC 211 XML Maintenance Group (XMG)
+Comments, suggestions, change requests and revisions
+are managed in the https://github.com/ISO-TC211/XML[GitHub repository]
+for the ISO/TC 211 XML Maintenance Group (XMG).
 
-For more information, please visit the https://committee.iso.org/home/tc211[ISO/TC 211 committee page].
+For more information, please visit
+https://committee.iso.org/home/tc211[ISO/TC 211 committee page]
+and https://www.isotc211.org/[ISO/TC 211 resources site].
 
-This site is managed by ISO/TC 211 XML Maintenance Group (XML) and Ribose.
+This site is managed by ISO/TC 211 XMG and Ribose.
