@@ -5,11 +5,15 @@ permalink: /
 :page-liquid:
 
 
-[.section]
-== Usage
+[.section.locator]
+== Locating schemas
 
-Each part of each standard has a directory like:
-`+++https://schemas.isotc211.org/StandardNumber/PartNumber/NamespacePrefix/Version+++`.
+The URL of each part of each standard has the following format:
+
+[source]
+--
+https://schemas.isotc211.org/StandardNumber/PartNumber/NamespacePrefix/Version
+--
 
 For example:
 
@@ -30,3 +34,32 @@ https://committee.iso.org/home/tc211[ISO/TC 211 committee page]
 and https://www.isotc211.org/[ISO/TC 211 resources site].
 
 This site is managed by ISO/TC 211 XMG and Ribose.
+
+
+++++
+<template id="schemaLocator">
+  <form>
+    <div class="input">
+      <label for="schemaStandardNumber">Standard number</label>
+      <input id="schemaStandardNumber" type="text" placeholder="For example, 19115" name="standardNumber">
+    </div>
+    <div class="input">
+      <label for="schemaPartNumber">Part number</label>
+      <input id="schemaPartNumber" type="text" placeholder="3" name="partNumber">
+    </div>
+    <div class="input">
+      <label for="schemaNsPrefix">Namespace prefix</label>
+      <input id="schemaNsPrefix" type="text" placeholder="cit" name="nsPrefix">
+    </div>
+    <div class="input">
+      <label for="schemaVersion">Version</label>
+      <input id="schemaVersion" type="text" placeholder="1.0" name="version">
+    </div>
+    <div class="actions">
+      <button type="button" name="locate">Locate schema</button>
+    </div>
+  </form>
+</template>
+
+<script src="{{ "/assets/locator.js" | relative_url }}"></script>
+++++
