@@ -5,8 +5,11 @@ permalink: /
 :page-liquid:
 
 
+[.section]
+== link:/schemas[Browse all schemas]
+
 [.section.locator]
-== Locating schemas
+== Locate a specific schema
 
 The URL of each part of each standard has the following format:
 

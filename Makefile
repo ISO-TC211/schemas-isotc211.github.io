@@ -7,8 +7,9 @@ clean:
 
 build_source:
 	mkdir -p $@; \
+	mkdir -p $@/schemas; \
 	cp -a source/* build_source; \
-	cp -a schemas/* build_source; \
+	cp -a schemas/* build_source/schemas; \
 
 _site: build_source
 	bundle exec jekyll build
