@@ -1,4 +1,5 @@
 .DS_Store
 build_source/*
+node_modules
 _site
 *.scssc
