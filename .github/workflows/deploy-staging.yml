@@ -1,8 +1,8 @@
-name: deploy-master
+name: deploy-staging
 
 on:
   push:
-    branches: master
+    branches: staging
 
 jobs:
   build:
@@ -25,7 +25,12 @@ jobs:
           architecture: 'x64'
       - uses: actions/checkout@master
       - name: Setup git submodules
+        # env:
+        #   MLGT_DATA_DEPLOY_KEY: ${{ secrets.MLGT_DATA_DEPLOY_KEY }}
+        #   GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"
         run: |
+          # eval "$(ssh-agent -s)"
+          # ssh-add - <<< "${MLGT_DATA_DEPLOY_KEY}"
           make update-init update-modules
       - name: Update gems
         run: |
@@ -39,7 +44,7 @@ jobs:
           make _site
 
 
-      - name: Deploy to geolexica.org
+      - name: Deploy to ${{ secrets.S3_BUCKET_NAME_STAGING }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
