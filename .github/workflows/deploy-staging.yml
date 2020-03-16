@@ -4,12 +4,12 @@ on:
   push:
     branches: staging
   repository_dispatch:
+    types: [ deploy_staging ]
 
 jobs:
   build:
     name: Build site
     runs-on: ubuntu-latest
-    if: github.event_name != 'repository_dispatch' || (github.event_name == 'repository_dispatch' && github.event.action == 'deploy_staging')
     steps:
       - name: Setup prerequisites
         run: |
