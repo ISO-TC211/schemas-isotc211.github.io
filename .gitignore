@@ -3,3 +3,5 @@ build_source/*
 node_modules
 _site
 *.scssc
+Gemfile.lock
+
