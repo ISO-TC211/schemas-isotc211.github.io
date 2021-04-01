@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.6'
-#          architecture: 'x64'
+          architecture: 'x64'
       - uses: actions/checkout@master
       - name: Setup git submodules
         # env:
