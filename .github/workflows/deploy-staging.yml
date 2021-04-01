@@ -34,6 +34,9 @@ jobs:
       - name: Setup npm
         run: |
           npm install
+      - name: Build XSD documentation
+        run: |
+          make _xsddoc
       - name: Build site
         env:
           JEKYLL_ENV: production

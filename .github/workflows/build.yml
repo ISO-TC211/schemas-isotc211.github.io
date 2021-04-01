@@ -44,6 +44,9 @@ jobs:
       - name: Setup npm
         run: |
           npm install
+      - name: Build XSD documentation
+        run: |
+          make _xsddoc
       - name: Build site
         run: |
           make _site
