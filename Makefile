@@ -33,6 +33,7 @@ doc/%/index.html: %.xsd $(XSDVIPATH) $(XSLT_FILE)
 	mkdir -p $(dir $@)diagrams; \
 	java -jar $(XSDVIPATH) $(CURDIR)/$< -rootNodeName all -oneNodeOnly -outputPath $(dir $@)diagrams; \
 	xsltproc --nonet --param title "'Schema Documentation $(notdir $*)'" \
+		--stringparam rootxsd $< \
 		--output $@ $(XSLT_FILE) $<
 
 build_source:
