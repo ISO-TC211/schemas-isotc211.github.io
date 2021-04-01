@@ -8,8 +8,12 @@ XSDVIPATH := ${CURDIR}/xsdvi/xsdvi.jar
 XSLT_FILE := ${CURDIR}/xsl/xs3p.xsl
 
 
-testxsd:
-	echo $(XSDDOC)
+all: _site _xsddoc
+
+clean:
+	rm -rf _site build_source
+
+_xsddoc: $(XSDDOC)
 
 xsdvi/xsdvi.zip:
 	mkdir -p $(dir $@)
@@ -30,12 +34,6 @@ doc/%/index.html: %.xsd $(XSDVIPATH) $(XSLT_FILE)
 	java -jar $(XSDVIPATH) $(CURDIR)/$< -rootNodeName all -oneNodeOnly -outputPath $(dir $@)diagrams; \
 	xsltproc --nonet --param title "'Schema Documentation $(notdir $*)'" \
 		--output $@ $(XSLT_FILE) $<
-
-
-all: _site
-
-clean:
-	rm -rf _site build_source
 
 build_source:
 	mkdir -p $@; \
