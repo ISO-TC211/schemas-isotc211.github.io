@@ -1,7 +1,8 @@
 SHELL := /bin/bash
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
-XSDSRC := $(call rwildcard,schemas/,[a-z][a-z][a-z].xsd)
+#XSDSRC := $(call rwildcard,schemas/,[a-z][a-z][a-z].xsd)
+XSDSRC := $(call rwildcard,schemas/,*.xsd)
 XSDDOC := $(patsubst schemas/%.xsd,doc/schemas/%/index.html,$(XSDSRC))
 
 XSDVIPATH := ${CURDIR}/xsdvi/xsdvi.jar
