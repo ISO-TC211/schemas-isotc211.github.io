@@ -47,7 +47,7 @@ jobs:
           npm install
       - name: Build XSD documentation
         run: |
-          make _xsddoc
+          make --ignore-errors _xsddoc
       - name: Build site
         run: |
           make _site
