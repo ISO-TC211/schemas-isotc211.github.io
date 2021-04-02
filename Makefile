@@ -6,7 +6,7 @@ XSDDOC := $(patsubst schemas/%.xsd,doc/schemas/%/index.html,$(XSDSRC))
 
 XSDVIPATH := ${CURDIR}/xsdvi/xsdvi.jar
 XSLT_FILE := ${CURDIR}/xsl/xs3p.xsl
-
+XSLT_FILE_MERGE := ${CURDIR}/xsl/xsdmerge.xsl
 
 all: _site _xsddoc
 
@@ -26,15 +26,21 @@ $(XSLT_FILE):
 	mkdir -p $(dir $@)
 	curl -sSL https://raw.githubusercontent.com/unitsml/schemas/master/xsl/xs3p.xsl > $@
 
+$(XSLT_FILE_MERGE):
+	mkdir -p $(dir $@)
+	curl -sSL https://raw.githubusercontent.com/unitsml/schemas/master/xsl/xsdmerge.xsl > $@
+
+
 xsdvi/xercesImpl.jar: xsdvi/xsdvi.zip
 	unzip -p $< dist/lib/xercesImpl.jar > $@
 
-doc/%/index.html: %.xsd $(XSDVIPATH) $(XSLT_FILE)
+doc/%/index.html: %.xsd $(XSDVIPATH) $(XSLT_FILE) $(XSLT_FILE_MERGE)
 	mkdir -p $(dir $@)diagrams; \
 	java -jar $(XSDVIPATH) $(CURDIR)/$< -rootNodeName all -oneNodeOnly -outputPath $(dir $@)diagrams; \
+	xsltproc --nonet --stringparam rootxsd $< --output $@.tmp $(XSLT_FILE_MERGE) $<;\
 	xsltproc --nonet --param title "'Schema Documentation $(notdir $*)'" \
-		--stringparam rootxsd $< \
-		--output $@ $(XSLT_FILE) $<
+		--output $@ $(XSLT_FILE) $<.tmp;\
+	rm $<.tmp
 
 build_source:
 	mkdir -p $@; \
