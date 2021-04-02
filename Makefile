@@ -37,11 +37,11 @@ xsdvi/xercesImpl.jar: xsdvi/xsdvi.zip
 
 doc/%/index.html: %.xsd $(XSDVIPATH) $(XSLT_FILE) $(XSLT_FILE_MERGE)
 	mkdir -p $(dir $@)diagrams; \
-	java -jar $(XSDVIPATH) $(CURDIR)/$< -rootNodeName all -oneNodeOnly -outputPath $(dir $@)diagrams; \
-	xsltproc --nonet --stringparam rootxsd $< --output $@.tmp $(XSLT_FILE_MERGE) $<;\
-	xsltproc --nonet --param title "'Schema Documentation $(notdir $*)'" \
+	-java -jar $(XSDVIPATH) $(CURDIR)/$< -rootNodeName all -oneNodeOnly -outputPath $(dir $@)diagrams; \
+	-xsltproc --nonet --stringparam rootxsd $< --output $@.tmp $(XSLT_FILE_MERGE) $<;\
+	-xsltproc --nonet --param title "'Schema Documentation $(notdir $*)'" \
 		--output $@ $(XSLT_FILE) $@.tmp;\
-	rm $@.tmp
+	-rm $@.tmp
 
 build_source:
 	mkdir -p $@; \
