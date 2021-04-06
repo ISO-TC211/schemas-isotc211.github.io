@@ -1,4 +1,4 @@
 source:
     schemas:
-      - schemas/19110/fcc/1.0/fcc.xsd
+      - schemas/19115/-3/msr/2.0/msr.xsd
       - schemas/19139/-/gmx/1.0/gmx.xsd
