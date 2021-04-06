@@ -2,7 +2,8 @@ SHELL := /bin/bash
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
 #XSDSRC := $(call rwildcard,schemas/,[a-z][a-z][a-z].xsd)
-XSDSRC := $(call rwildcard,schemas/,*.xsd)
+XSDSRCALL := $(call rwildcard,schemas/,*.xsd)
+XSDSRC := $(shell yq r schemas.yml source.schemas | cut -c 3-)
 XSDDOC := $(patsubst schemas/%.xsd,doc/schemas/%/index.html,$(XSDSRC))
 
 XSDVIPATH := ${CURDIR}/xsdvi/xsdvi.jar
