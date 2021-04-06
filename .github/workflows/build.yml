@@ -26,8 +26,8 @@ jobs:
           sudo snap install node --classic --channel=10/stable
       - name: Install yq
         run: |
-          GO111MODULE=on go get github.com/mikefarah/yq/v3
-          ln -s $GOPATH/bin/yq /usr/local/bin/yq
+          sudo snap install yq
+          echo "::add-path::/snap/bin"
       - name: Use Ruby
         uses: actions/setup-ruby@v1
         with:
