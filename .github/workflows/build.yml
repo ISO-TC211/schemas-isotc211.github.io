@@ -27,7 +27,7 @@ jobs:
       - name: Install yq
         run: |
           sudo snap install yq
-          echo "::add-path::/snap/bin"
+          echo "/snap/bin" >> $GITHUB_PATH
       - name: Use Ruby
         uses: actions/setup-ruby@v1
         with:
