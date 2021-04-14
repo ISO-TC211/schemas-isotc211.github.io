@@ -2,17 +2,17 @@ SHELL := /bin/bash
 #rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 #XSDSRC := $(call rwildcard,schemas/,[a-z][a-z][a-z].xsd)
 #XSDSRCALL := $(call rwildcard,schemas/,*.xsd)
-XSDSRC := $(shell yq e .source.schemas schemas.yml  | cut -c 3-)
-XSDDOC := $(patsubst schemas/%.xsd,doc/schemas/%/index.html,$(XSDSRC))
+XSDSRC := $(shell yq e .source.schemas schemas.yml | cut -c 3-)
+XSDDOC := $(patsubst schemas/%.xsd,schemas/%/index.html,$(XSDSRC))
 
 XSDVIPATH := ${CURDIR}/xsdvi/xsdvi.jar
 XSLT_FILE := ${CURDIR}/xsl/xs3p.xsl
 XSLT_FILE_MERGE := ${CURDIR}/xsl/xsdmerge.xsl
 
-all: _site _xsddoc
+all: _site
 
 clean:
-	rm -rf _site build_source
+	rm -rf _site build_source $(XSDDOC)
 
 _xsddoc: $(XSDDOC)
 
@@ -31,22 +31,22 @@ $(XSLT_FILE_MERGE):
 	mkdir -p $(dir $@)
 	curl -sSL https://raw.githubusercontent.com/unitsml/schemas/master/xsl/xsdmerge.xsl > $@
 
-
 xsdvi/xercesImpl.jar: xsdvi/xsdvi.zip
 	unzip -p $< dist/lib/xercesImpl.jar > $@
 
-doc/%/index.html: %.xsd $(XSDVIPATH) $(XSLT_FILE) $(XSLT_FILE_MERGE)
+schemas/%/index.html: schemas/%.xsd $(XSDVIPATH) $(XSLT_FILE) $(XSLT_FILE_MERGE)
 	mkdir -p $(dir $@)diagrams; \
 	java -jar $(XSDVIPATH) $(CURDIR)/$< -rootNodeName all -oneNodeOnly -outputPath $(dir $@)diagrams; \
-	xsltproc --nonet --stringparam rootxsd $< --output $@.tmp $(XSLT_FILE_MERGE) $<;\
-	xsltproc --nonet --param title "'Schema Documentation $(notdir $*)'" \
+	xsltproc --nonet --stringparam rootxsd $< \
+		--output $@.tmp $(XSLT_FILE_MERGE) $<;\
+	xsltproc --nonet --param title "'Schema Documentation for $(notdir $*)'" \
 		--output $@ $(XSLT_FILE) $@.tmp;\
 	rm $@.tmp
 
-build_source:
+build_source: _xsddoc
 	mkdir -p $@; \
 	cp -a source/* build_source; \
-	cp -a schemas/* build_source; \
+	cp -a schemas/* build_source;
 
 _site: build_source
 	bundle exec jekyll build
