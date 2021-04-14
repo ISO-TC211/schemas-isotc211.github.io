@@ -21,7 +21,13 @@ The URL of each part of each standard has the following format:
 https://schemas.isotc211.org/StandardNumber/PartNumber/NamespacePrefix/Version
 --
 
+Each XSD file provides corresponding generated documentation.
 For example:
+
+* link:19115/-3/msr/2.0/msr/[19115/-3/msr/2.0/msr.xsd documentation]
+* link:19139/-/gmx/1.0/gmx/[19139/-/gmx/1.0/gmx.xsd documentation]
+
+You may also browse other resources:
 
 * link:19110/fcc/1.0/[]
 * link:19115/-3/cit/1.0[]
