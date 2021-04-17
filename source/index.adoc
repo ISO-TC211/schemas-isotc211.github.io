@@ -24,8 +24,10 @@ https://schemas.isotc211.org/StandardNumber/PartNumber/NamespacePrefix/Version
 Each XSD file provides corresponding generated documentation.
 For example:
 
-* link:19115/-3/msr/2.0/msr/[19115/-3/msr/2.0/msr.xsd documentation]
-* link:19139/-/gmx/1.0/gmx/[19139/-/gmx/1.0/gmx.xsd documentation]
+{% for schema in site.data.schemas.source.schemas %}
+* link:{{ schema | remove_first: "schemas/" | replace: ".xsd", "/" }}[{{ schema | remove_first: "schemas/" }} documentation]
+{% endfor %}
+
 
 You may also browse other resources:
 
