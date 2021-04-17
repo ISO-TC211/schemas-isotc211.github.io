@@ -46,7 +46,9 @@ schemas/%/index.html: schemas/%.xsd $(XSDVIPATH) $(XSLT_FILE) $(XSLT_FILE_MERGE)
 build_source: _xsddoc
 	mkdir -p $@; \
 	cp -a source/* build_source; \
-	cp -a schemas/* build_source;
+	cp -a schemas/* build_source; \
+	mkdir -p build_source/_data; \
+	cp schemas.yml build_source/_data;
 
 _site: build_source
 	bundle exec jekyll build
