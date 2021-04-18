@@ -21,8 +21,7 @@ The URL of each part of each standard has the following format:
 https://schemas.isotc211.org/StandardNumber/PartNumber/NamespacePrefix/Version
 --
 
-Each XSD file provides corresponding generated documentation.
-For example:
+Each XSD file provides corresponding generated documentation:
 
 {% for schema in site.data.schemas.source.schemas %}
 * link:{{ schema | remove_first: "schemas/" | replace: ".xsd", "/" }}[{{ schema | remove_first: "schemas/" }} documentation]
