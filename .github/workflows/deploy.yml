@@ -6,14 +6,16 @@ on:
       - master
       - staging
   repository_dispatch:
+    types:
+      - deploy
 
 jobs:
   build:
     name: Build site
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.ref == 'refs/heads/master' && 'production' || 'staging' }}
-      url: ${{ github.ref == 'refs/heads/master' && 'https://schemas.isotc211.org' || 'https://staging-schemas.isotc211.org' }}
+      name: ${{ (github.ref == 'refs/heads/master' || github.event.client_payload.ref == 'refs/heads/master') && 'production' || 'staging' }}
+      url: ${{ (github.ref == 'refs/heads/master' || github.event.client_payload.ref == 'refs/heads/master') && 'https://schemas.isotc211.org' || 'https://staging-schemas.isotc211.org' }}
     steps:
       - name: Setup prerequisites
         run: |
