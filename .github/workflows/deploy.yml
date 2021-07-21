@@ -24,7 +24,7 @@ jobs:
       - name: Setup snaps
         run: |
           sudo snap install yq
-      - uses: chrislennon/action-aws-cli@v1.1
+          sudo snap install aws-cli --classic
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
