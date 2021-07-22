@@ -9,15 +9,23 @@ schemas/_site:
 	pushd schemas; \
 	$(MAKE) all
 
-build_source: schemas/_site
-	mkdir -p $@; \
-	cp -a source/* build_source; \
-	cp -a schemas/_site build_source/schemas; \
-	cp -a schemas/19* build_source; \
-	mkdir -p build_source/_data; \
-	cp schemas.yml build_source/_data;
+build_source:
+	mkdir -p $@
 
-_site: build_source
+build_source/schemas/.done: schemas/_site | build_source
+	mkdir -p $(dir $@); \
+	cp -a source/* build_source; \
+	cp -R schemas/_site/* build_source/schemas; \
+	cp -a schemas/19* build_source; \
+	touch $@
+
+build_source/_data/schemas.yml: schemas.yml | build_source
+	mkdir -p $(dir $@); \
+	cp $< $@
+
+schemas.yml:
+
+_site: build_source/schemas/.done build_source/_data/schemas.yml
 	bundle exec jekyll build
 
 serve: _site
@@ -31,6 +39,7 @@ update-modules:
 	git submodule foreach git pull origin master
 
 clean-schemas:
-	$(MAKE) -f schemas/Makefile clean
+	pushd schemas; \
+	$(MAKE) clean
 
-.PHONY: all clean serve update-init update-modules
+.PHONY: all clean clean-schemas serve update-init update-modules
