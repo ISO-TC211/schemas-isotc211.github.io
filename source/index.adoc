@@ -9,7 +9,7 @@ extra_scripts:
 
 
 [.section]
-== link:/schemas[Browse all schemas]
+== link:/schemas[Browse all schemas and associated resources]
 
 [.section.locator]
 == Locate a specific schema
@@ -21,10 +21,10 @@ The URL of each part of each standard has the following format:
 https://schemas.isotc211.org/StandardNumber/PartNumber/NamespacePrefix/Version
 --
 
-Each XSD file provides corresponding generated documentation:
+Annotated documentation is provided for every XML schema available on this site:
 
 {% for schema in site.data.schemas.source.schemas %}
-* link:{{ schema | remove_first: "schemas/" | replace: ".xsd", "/" }}[{{ schema | remove_first: "schemas/" }} documentation]
+* link:{{ schema | remove_first: "schemas/" | replace: ".xsd", "/" }}[Annotated documentation for {{ schema | remove_first: "schemas/" }}]
 {% endfor %}
 
 

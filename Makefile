@@ -12,11 +12,11 @@ schemas/_site:
 build_source:
 	mkdir -p $@
 
-build_source/schemas/.done: schemas/_site | build_source
+build_source/.done: schemas/_site | build_source
 	mkdir -p $(dir $@); \
 	cp -a source/* build_source; \
-	cp -R schemas/_site/* build_source/schemas; \
 	cp -a schemas/19* build_source; \
+	cp -R schemas/_site/* build_source; \
 	touch $@
 
 build_source/_data/schemas.yml: schemas.yml | build_source
@@ -25,7 +25,7 @@ build_source/_data/schemas.yml: schemas.yml | build_source
 
 schemas.yml:
 
-_site: build_source/schemas/.done build_source/_data/schemas.yml
+_site: build_source/.done build_source/_data/schemas.yml
 	bundle exec jekyll build
 
 serve: _site
