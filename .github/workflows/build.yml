@@ -20,7 +20,7 @@ jobs:
       - name: Setup prerequisites
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl make libxml2-dev libxslt-dev openssl xsltproc
+          sudo apt-get install -y curl make libxml2-dev libxslt-dev libssl-dev openssl xsltproc
       - name: Use Ruby
         uses: actions/setup-ruby@v1
         with:
@@ -43,9 +43,6 @@ jobs:
       - name: Setup npm
         run: |
           npm install
-      - name: Build XSD documentation
-        run: |
-          make _xsddoc
       - name: Build site
         run: |
-          make _site
+          make
