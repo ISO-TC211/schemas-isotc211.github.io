@@ -16,6 +16,7 @@ build_source/.done: schemas/_site | build_source
 	mkdir -p $(dir $@); \
 	cp -a source/* build_source; \
 	cp -a schemas/19* build_source; \
+	cp -a schemas/Resources build_source; \
 	cp -R schemas/_site/* build_source; \
 	touch $@
 
