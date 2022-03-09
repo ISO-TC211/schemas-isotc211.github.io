@@ -36,8 +36,8 @@ update-init:
 	git submodule update --init
 
 update-modules:
-	git submodule foreach git checkout master
-	git submodule foreach git pull origin master
+	git submodule foreach git checkout main
+	git submodule foreach git pull origin main
 
 clean-schemas:
 	pushd schemas; \
