@@ -1,18 +1,14 @@
 ---
-title: Supporting resources for ISO/TC 211 XML schemas
+title: Transformations for ISO/TC 211 XML schemas
 layout: page
 permalink: /transforms/
 ---
-ISO/TC 211 provides additional resources for selective standards for their
-ease of use and implementation.
+ISO/TC 211 provides ready-to-use transformation scripts to facilitate user
+migration to newer versions of standards.
 
-The resources on this page are organized by functionality and standard
-identifiers.
+Resources on this page are organized by standard identifiers.
 
-
-== XSLT transforms
-
-=== ISO 19115-3:2022
+== ISO 19115-3:2022
 
 The ISO/TC 211 XMG provides 2 XSLT scripts for users using previous version
 of ISO 19115-3 XML schemas to migrate to the current schema.
