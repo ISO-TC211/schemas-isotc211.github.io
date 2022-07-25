@@ -1,6 +1,7 @@
 ---
 title: Supporting resources for ISO/TC 211 XML schemas
 layout: page
+permalink: /transforms/
 ---
 ISO/TC 211 provides additional resources for selective standards for their
 ease of use and implementation.

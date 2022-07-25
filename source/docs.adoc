@@ -1,7 +1,9 @@
 ---
 title: Documentation for XML schemas
 layout: page
+permalink: /docs/
 ---
+:page-liquid:
 
 Documentation is provided for all XML schemas.
 
