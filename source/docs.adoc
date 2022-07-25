@@ -8,5 +8,5 @@ permalink: /docs/
 Documentation is provided for all XML schemas.
 
 {% for schema in site.data.schemas.source.schemas %}
-* link:{{ schema | remove_first: "schemas/" | replace: ".xsd", "/" }}[{{ schema | remove_first: "schemas/" }}]
+* link:/{{ schema | remove_first: "schemas/" | replace: ".xsd", "/" }}[{{ schema | remove_first: "schemas/" }}]
 {% endfor %}
