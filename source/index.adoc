@@ -7,10 +7,6 @@ extra_scripts:
 ---
 :page-liquid:
 
-
-[.section]
-== link:/schemas[Browse all schemas and associated resources]
-
 [.section.locator]
 == Locate a specific schema
 
@@ -18,15 +14,25 @@ The URL of each part of each standard has the following format:
 
 [source]
 --
-https://schemas.isotc211.org/StandardNumber/PartNumber/NamespacePrefix/Version
+https://schemas.isotc211.org/{StandardNumber}/{PartNumber}/{NamespacePrefix}/{Version}
 --
 
-Annotated documentation is provided for every XML schema available on this site:
+== Schema documentation
+
+Schema documentation is provided for all XML schemas:
 
 {% for schema in site.data.schemas.source.schemas %}
-* link:{{ schema | remove_first: "schemas/" | replace: ".xsd", "/" }}[Annotated documentation for {{ schema | remove_first: "schemas/" }}]
+* link:{{ schema | remove_first: "schemas/" | replace: ".xsd", "/" }}[{{ schema | remove_first: "schemas/" }}]
 {% endfor %}
 
+[.section]
+== link:/schemas[See supporting resources] such as transformations
+
+[.section]
+== link:/schemas[Browse schemas and associated resources]
+
+[.section]
+== Other resources
 
 You may also browse other resources:
 

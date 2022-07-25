@@ -2,7 +2,7 @@ SHELL := /bin/bash
 
 all: _site
 
-clean: clean-schemas
+clean:
 	rm -rf _site build_source
 
 schemas/_site:
@@ -13,7 +13,6 @@ build_source:
 	mkdir -p $@
 
 build_source/.done: schemas/_site | build_source
-	mkdir -p $(dir $@); \
 	cp -a source/* build_source; \
 	cp -a schemas/19* build_source; \
 	cp -a schemas/Resources build_source; \
@@ -39,8 +38,10 @@ update-modules:
 	git submodule foreach git checkout main
 	git submodule foreach git pull origin main
 
+distclean: clean clean-schemas
+
 clean-schemas:
 	pushd schemas; \
 	$(MAKE) clean
 
-.PHONY: all clean clean-schemas serve update-init update-modules
+.PHONY: all clean clean-schemas distclean serve update-init update-modules
