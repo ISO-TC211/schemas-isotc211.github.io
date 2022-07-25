@@ -44,8 +44,8 @@ jobs:
         name: Cache schema documentation
         with:
           path: |
-            schemas/_site
-          key: ${{ runner.os }}-${{ hashFiles('schemas/_site/**') }}
+            schemas/
+          key: ${{ runner.os }}-${{ hashFiles('schemas/**') }}
 
       - name: Generate schema documentation
         if: steps.cache-schema-docs.outputs.cache-hit != 'true'
