@@ -18,21 +18,13 @@ https://schemas.isotc211.org/{StandardNumber}/{PartNumber}/{NamespacePrefix}/{Ve
 --
 
 [.section]
-== link:/schemas[Browse schemas and associated resources]
+== link:/docs[Schema documentation]
 
+[.section]
+== link:/schemas[Schemas and associated resources]
 
 [.section]
 == link:/transforms[Supporting transformations]
-
-
-[.section]
-== Schema documentation
-
-Schema documentation is provided for all XML schemas:
-
-{% for schema in site.data.schemas.source.schemas %}
-* link:{{ schema | remove_first: "schemas/" | replace: ".xsd", "/" }}[{{ schema | remove_first: "schemas/" }}]
-{% endfor %}
 
 
 [.section]
