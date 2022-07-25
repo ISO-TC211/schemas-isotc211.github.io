@@ -34,9 +34,23 @@ jobs:
       - name: Setup snaps
         run: |
           sudo snap install yq
+
       - name: Update submodules
         run: |
           make update-init update-modules
+
+      - uses: actions/cache@v3
+        id: cache-schema-docs
+        name: Cache schema documentation
+        with:
+          path: |
+            schemas/_site
+          key: ${{ runner.os }}-${{ hashFiles('schemas/_site/**') }}
+
+      - name: Generate schema documentation
+        if: steps.cache-schema-docs.outputs.cache-hit != 'true'
+        run: make schemas/_site
+
       - name: Build site
         env:
           JEKYLL_ENV: production
