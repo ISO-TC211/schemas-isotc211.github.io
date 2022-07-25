@@ -8,33 +8,34 @@ extra_scripts:
 :page-liquid:
 
 [.section.locator]
-== Locate a specific schema
+== Locate specific schemas
 
-The URL of each part of each standard has the following format:
+Each ISO/TC 211 schema is identified by a URI of the following pattern:
 
 [source]
---
+----
 https://schemas.isotc211.org/{StandardNumber}/{PartNumber}/{NamespacePrefix}/{Version}
---
+----
+
+NOTE: When a standard has no part number, the character `-` (dash-hyphen) is
+used for `{PartNumber}`.
+
+[example]
+.Examples of schema information URIs
+====
+* ISO 19110:2005 `fcc` v1.0: link:19110/fcc/1.0/[]
+* ISO 19115-3:2016 `cit` 1.0: link:19115/-3/cit/1.0[]
+* ISO/TS 19157-2:2016 `mdq` 1.0: link:19157/-2/mdq/1.0[]
+====
 
 [.section]
-== link:/docs[Schema documentation]
+== Resources
 
-[.section]
-== link:/schemas[Schemas and associated resources]
+* link:/docs[Schema documentation]
 
-[.section]
-== link:/transforms[Supporting transformations]
+* link:/schemas[Browse schemas and associated resources]
 
-
-[.section]
-== Other resources
-
-You may also browse other resources:
-
-* link:19110/fcc/1.0/[]
-* link:19115/-3/cit/1.0[]
-* link:19157/-2/mdq/1.0[]
+* link:/transforms[Supporting transformations]
 
 
 [.section]
