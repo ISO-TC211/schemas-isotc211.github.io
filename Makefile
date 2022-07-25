@@ -28,7 +28,7 @@ schemas.yml:
 _site: build_source/.done build_source/_data/schemas.yml
 	bundle exec jekyll build
 
-serve: _site
+serve: build_source/.done build_source/_data/schemas.yml
 	bundle exec jekyll serve
 
 update-init:
