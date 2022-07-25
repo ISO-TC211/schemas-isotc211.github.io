@@ -17,6 +17,15 @@ The URL of each part of each standard has the following format:
 https://schemas.isotc211.org/{StandardNumber}/{PartNumber}/{NamespacePrefix}/{Version}
 --
 
+[.section]
+== link:/schemas[Browse schemas and associated resources]
+
+
+[.section]
+== link:/transforms[Supporting transformations]
+
+
+[.section]
 == Schema documentation
 
 Schema documentation is provided for all XML schemas:
@@ -25,11 +34,6 @@ Schema documentation is provided for all XML schemas:
 * link:{{ schema | remove_first: "schemas/" | replace: ".xsd", "/" }}[{{ schema | remove_first: "schemas/" }}]
 {% endfor %}
 
-[.section]
-== link:/schemas[See supporting resources] such as transformations
-
-[.section]
-== link:/schemas[Browse schemas and associated resources]
 
 [.section]
 == Other resources
