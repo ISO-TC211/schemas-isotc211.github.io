@@ -1,23 +1,14 @@
 title: XML schemas for ISO/TC 211 Geographic information/Geomatics
 title_html: XML&nbsp;schema representations of&nbsp;geographic&nbsp;technology standards
 
+theme: jekyll-theme-isotc211
+author: "ISO/TC 211"
+email: open.source@ribose.com
+
 committee:
   id: 211
   name: Geographic information/Geomatics
   home: https://committee.iso.org/home/tc211
-
-footer_nav:
-  - url: https://committee.iso.org/home/tc211
-    title: Committee Site
-
-font_awesome_kit_url: https://kit.fontawesome.com/77a8a07e0a.js
-
-resource_listings:
-  schemas:
-    index_url: 'schemas'
-    index_title: "Schemas"
-    resource_root: 'schemas'
-    resource_label: "schema"
 
 description: >-
   The XML schema repository for geographic information technology
@@ -26,15 +17,25 @@ description: >-
 tagline: >-
   XML schema repository for geographic information technology
 
-author: "ISO/TC 211"
-email: open.source@ribose.com
-
-theme: jekyll-theme-isotc211
+markdown: kramdown
 
 collections:
   pages:
     output: true
     permalink: /:path/
+
+resource_listings:
+  schemas:
+    index_url: 'schemas'
+    index_title: "Schemas"
+    resource_root: 'schemas'
+    resource_label: "schema"
+
+footer_nav:
+  - url: https://committee.iso.org/home/tc211
+    title: Committee Site
+
+font_awesome_kit_url: https://kit.fontawesome.com/77a8a07e0a.js
 
 social:
   links:
@@ -47,8 +48,6 @@ powered_by:
   url: https://open.ribose.com
   title: Ribose
   logo_path: /assets/logo-ribose.svg
-
-markdown: kramdown
 
 source: build_source
 include:
