@@ -21,14 +21,23 @@ ISO 19115-3:2016 XML (v1.0 and v2.0) instance documents into ISO 19115-3 v1.3
 and ISO 19115-1 and ISO 19115-2:.
 
 * Convert XML records from 19115-3 v1.0 to v1.3:
-link:/schemas/19115/resources/transforms/19115-3-2016-2022/ISO19115-3V1.0_Call_NamespaceUpdateThenReorder.xsl[`ISO191115-3V1.0_Call_NamespaceUpdateThenReorder.xsl`]
+** File name: `ISO191115-3V1.0_Call_NamespaceUpdateThenReorder.xsl`
+** URL: `https://schemas.isotc211.org/schemas/19115/resources/transforms/19115-3-2016-2022/ISO19115-3V1.0_Call_NamespaceUpdateThenReorder.xsl`
 
 * Convert XML records from 19115-3 v2.0 to v1.3:
-link:/schemas/19115/resources/transforms/19115-3-2016-2022/ISO19115-3V2.0_Call_NamespaceUpdateThenReorder.xsl[`ISO191115-3V2.0_Call_NamespaceUpdateThenReorder.xsl`]
+** File name: `ISO191115-3V2.0_Call_NamespaceUpdateThenReorder.xsl`
+** URL: `https://schemas.isotc211.org/schemas/19115/resources/transforms/19115-3-2016-2022/ISO19115-3V2.0_Call_NamespaceUpdateThenReorder.xsl`
 
-To use these XSLT scripts offline, the full set of scripts can be downloaded as
-a single ZIP file:
 
-* link:/schemas/19115/resources/transforms/19115-3-2016-2022.zip[`19115-3-2016-2022.zip`]
+To use these XSLT files online:
+
+* Please directly refer to the URLs specified above, as these transformation
+files also refer to other component files provided in the same directory.
+
+To use these XSLT files offline:
+
+* Download the full set of scripts as a single ZIP file:
+link:/schemas/19115/resources/transforms/19115-3-2016-2022.zip[`19115-3-2016-2022.zip`]
+
 
 // link:/schemas/19115/resources/transforms/CT_CodelistCatalougue2HTML.xsl[CT_CodelistCatalougue2HTML.xsl]
