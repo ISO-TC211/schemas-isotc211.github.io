@@ -37,6 +37,8 @@ used for `{PartNumber}`.
 
 * link:/transforms[Supporting transformations]
 
+* link:/19115/resources[ISO 19115 series namespaces]
+
 
 [.section]
 == Maintenance
