@@ -1,0 +1,79 @@
+name: links
+
+on:
+  push:
+    branches:
+    - main
+    - staging
+  pull_request:
+
+jobs:
+  link_checker:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup prerequisites
+      run: |
+        sudo apt-get install -y xsltproc
+
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+        bundler-cache: true
+        cache-version: 0 # Increment this number if you need to re-download cached gems
+
+    - name: Setup node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        cache: 'npm'
+
+    - run: npm install
+
+    - name: Setup snaps
+      run: |
+          sudo snap install yq
+
+    - name: Update submodules
+      run: |
+        make update-init update-modules
+
+    - uses: actions/cache@v3
+      id: cache-schema-docs
+      name: Cache schema documentation
+      with:
+        path: |
+          schemas/
+        key: ${{ runner.os }}-${{ hashFiles('schemas/**') }}
+
+    - name: Generate schema documentation
+      if: steps.cache-schema-docs.outputs.cache-hit != 'true'
+      run: make schemas/_site
+
+    - name: Setup Pages
+      id: pages
+      uses: actions/configure-pages@v3
+
+    - name: Build with Jekyll
+      # Outputs to the './_site' directory by default
+      run: build_source/.done build_source/_data/schemas.yml bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+      env:
+        JEKYLL_ENV: production
+
+    - name: Link Checker
+      uses: lycheeverse/lychee-action@v1.2.0
+      with:
+        args: --verbose --no-progress --exclude-file .lycheeignore -- _site/**/*.html
+        fail: true
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      # - name: Create Issue From File
+      #   uses: peter-evans/create-issue-from-file@v2
+      #   with:
+      #     title: Link Checker Report
+      #     content-filepath: ./lychee/out.md
+      #     labels: report, automated issue
