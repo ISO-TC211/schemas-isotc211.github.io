@@ -27,7 +27,7 @@ jobs:
     # needs: [set_environment]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup prerequisites
         run: |
@@ -36,27 +36,23 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'
+          ruby-version: '3.3'
           bundler-cache: true
           cache-version: 0 # Increment this number if you need to re-download cached gems
 
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version: '16'  # Updated node version
           cache: 'npm'
 
       - run: npm install
-
-      - name: Setup snaps
-        run: |
-          sudo snap install yq
 
       - name: Update submodules
         run: |
           make update-init update-modules
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: cache-schema-docs
         name: Cache schema documentation
         with:
@@ -70,7 +66,7 @@ jobs:
 
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v5
 
       - name: Build site
         env:
@@ -79,7 +75,7 @@ jobs:
 
       - name: Upload artifact
         # Automatically uploads an artifact from the './_site' directory by default
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
 
   # Deployment job
   deploy:
@@ -92,4 +88,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
