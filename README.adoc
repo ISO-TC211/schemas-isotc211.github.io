@@ -1,29 +1,72 @@
 = ISO/TC 211 XML Schemas site: schemas.isotc211.org
 
-image:https://github.com/ISO-TC211/schemas.isotc211.org/workflows/build/badge.svg["Build Status", link="https://github.com/ISO-TC211/schemas.isotc211.org/actions?workflow=build"]
+image:https://github.com/ISO-TC211/schemas-isotc211.github.io/actions/workflows/build_deploy.yml/badge.svg["build-deploy", link="https://github.com/ISO-TC211/schemas-isotc211.github.io/actions/workflows/build_deploy.yml"]
 
-image:https://github.com/ISO-TC211/schemas.isotc211.org/workflows/deploy-master/badge.svg["Build Status", link="https://github.com/ISO-TC211/schemas.isotc211.org/actions?workflow=deploy-master"]
+image:https://github.com/ISO-TC211/schemas-isotc211.github.io/actions/workflows/links.yml/badge.svg["build-deploy", link="https://github.com/ISO-TC211/schemas-isotc211.github.io/actions/workflows/links.yml"]
 
-image:https://github.com/ISO-TC211/schemas.isotc211.org/workflows/deploy-staging/badge.svg["Build Status", link="https://github.com/ISO-TC211/schemas.isotc211.org/actions?workflow=deploy-staging"]
 
 == Introduction
 
-The ISO/TC 211 XML Schemas site is used to publish XML schemas
-published by ISO/TC 211 standards.
+The ISO/TC 211 XML Schemas site is used to publish XML schemas published by
+ISO/TC 211 standards.
 
-This repository is used to build and deploy the
-https://schemas.isotc211.org site.
+This repository is used to build and deploy the https://schemas.isotc211.org
+site.
 
-This repository is jointly managed by ISO/TC 211 and Ribose.
+This repository is jointly managed by ISO/TC 211 and operated by Ribose under
+the ISO/TC 211 Harmonized Resources Maintenance Agency (HRMA) run by the Swedish
+Institute of Standards (SIS).
 
 
 == Building the site
+
+Use the Makefile for building the site, which internally uses the `hrma` gem
+given in the `schemas/` directory.
 
 [source,sh]
 ----
 # removes site artifacts
 make clean
 
-# makes _site
+# builds schema documentation and builds _site
 make all
+
+# starts a local server
+make serve
+----
+
+
+== Project Structure
+
+* `schemas/` - Contains the ISO/TC 211 schema files and documentation generator
+* `source/` - Contains the source files for the Jekyll site
+* `build_source/` - Temporary build directory (generated)
+* `_site/` - Final site output directory (generated)
+* `Makefile` - Build system
+* `.github/` - GitHub Actions workflows and configuration
+
+== Documentation and tools
+
+For more detailed documentation on the `hrma` tool and how to manage schemas,
+see the README in the `schemas/` directory.
+
+The `hrma` tool provides commands for:
+
+* Managing the schema manifest file (`schemas.yml`)
+* Generating documentation for schemas
+* Cleaning up generated files
+
+[source,sh]
+----
+# Show available commands
+cd schemas && bundle exec hrma help
+
+# Show help for a specific command
+cd schemas && bundle exec hrma build help
+
+# Generate schema documentation
+cd schemas && bundle exec hrma build documentation
+
+# Clean all generated files
+cd schemas && bundle exec hrma build clean
 ----
