@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup prerequisites
       run: |
@@ -21,27 +21,23 @@ jobs:
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.1'
+        ruby-version: '3.3'
         bundler-cache: true
         cache-version: 0 # Increment this number if you need to re-download cached gems
 
     - name: Setup node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
-        node-version: '14'
+        node-version: '16'
         cache: 'npm'
 
     - run: npm install
-
-    - name: Setup snaps
-      run: |
-          sudo snap install yq
 
     - name: Update submodules
       run: |
         make update-init update-modules
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       id: cache-schema-docs
       name: Cache schema documentation
       with:
@@ -55,7 +51,7 @@ jobs:
 
     - name: Setup Pages
       id: pages
-      uses: actions/configure-pages@v3
+      uses: actions/configure-pages@v5
 
     - name: Build with Jekyll
       # Outputs to the './_site' directory by default
@@ -63,13 +59,18 @@ jobs:
       env:
         JEKYLL_ENV: production
 
-    - name: Link Checker
-      uses: lycheeverse/lychee-action@v1.2.0
+    - name: Restore lychee cache
+      uses: actions/cache@v4
       with:
-        args: --verbose --no-progress --exclude-file .lycheeignore -- _site/**/*.html
+        path: .lycheecache
+        key: cache-lychee-${{ github.sha }}
+        restore-keys: cache-lychee-
+
+    - name: Link Checker
+      uses: lycheeverse/lychee-action@v2
+      with:
+        args: --verbose --no-progress --base '_site' --cache --max-cache-age 1d --root-dir / '_site/**/*.html'
         fail: true
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       # - name: Create Issue From File
       #   uses: peter-evans/create-issue-from-file@v2
