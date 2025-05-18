@@ -7,7 +7,8 @@ clean:
 
 schemas/_site:
 	pushd schemas; \
-	$(MAKE) all
+	bundle; \
+	bundle exec hrma build documentation --workers 1
 
 build_source:
 	mkdir -p $@
@@ -42,6 +43,7 @@ distclean: clean clean-schemas
 
 clean-schemas:
 	pushd schemas; \
-	$(MAKE) clean
+	bundle; \
+	bundle exec hrma build clean
 
 .PHONY: all clean clean-schemas distclean serve update-init update-modules
