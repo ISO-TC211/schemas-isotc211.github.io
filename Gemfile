@@ -11,9 +11,4 @@ group :jekyll_plugins do
   gem "jekyll-redirect-from"
 end
 
-gem "lutaml-xsd", "~> 1.1"
-gem "lutaml-model", "~> 0.8.0"
-gem "lutaml-jsonschema"
-gem "moxml"
-gem "canon"
 gem "webrick"

@@ -13,11 +13,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Architecture: **1 standard+part+version → 1 LXR package → 1 SPA HTML file**, all listed on the index page.
 
+## Two-Gemfile Architecture
+
+`lutaml-xsd` depends on `terminal-table` in a way incompatible with Jekyll ~> 4.3. They cannot share a single Gemfile:
+- **`Gemfile`** — Jekyll + jekyll-theme-isotc211 + jekyll-vite (for `bundle exec jekyll build/serve`)
+- **`Gemfile.lutaml`** — lutaml-xsd + lutaml-model + lutaml-jsonschema (for lutaml commands)
+
+The lutaml bundle uses a separate install path (`vendor/bundle-lutaml`) to avoid corrupting the Jekyll bundle. The Makefile uses `BUNDLE_GEMFILE=Gemfile.lutaml BUNDLE_PATH=vendor/bundle-lutaml` for all lutaml commands.
+
 ## Build Commands
 
 ```bash
-# Install dependencies
+# Install dependencies (both Gemfiles + npm)
 bundle install
+BUNDLE_GEMFILE=Gemfile.lutaml BUNDLE_PATH=vendor/bundle-lutaml bundle install
 npm install
 
 # Full build (configs → LXR packages → SPA HTMLs → Jekyll site)
