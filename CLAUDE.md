@@ -68,7 +68,7 @@ generate_configs.rb   → Reads manifests from schemas/ + auto-discovers resourc
 configs/              → Auto-generated per-package lutaml-xsd configs
 build/                → Intermediate LXR packages (.lxr ZIP files)
 site/                 → SPA HTML output from lutaml-xsd and lutaml-jsonschema
-_site/                → Final deployable output (Jekyll build destination)
+_site/                → Final deployable output (Jekyll build + SPA files copied in)
 
 _frontend/            → jekyll-vite frontend source
   entrypoints/application.js → imports theme + schemas.css + schemas.js + resources.js
@@ -140,3 +140,14 @@ Defined in `generate_configs.rb`, auto-included in every lutaml-xsd config:
 ## Deployment
 
 GitHub Actions workflow (`.github/workflows/build_deploy.yml`) builds on push to `main` and deploys `_site/` to GitHub Pages. The schemas submodule (ISO-TC211/schemas) triggers a `repository_dispatch` event to rebuild the site on schema changes.
+
+### SPA deployment flow
+1. `generate_configs.rb` produces per-package configs + `Makefile.spa` (with `SPA_FILES` list)
+2. `make build-all` builds LXR packages + SPA HTML files (in parallel with `-j4`)
+3. `lutaml-jsonschema` requires its frontend pre-built: `cd $(bundle show lutaml-jsonschema)/frontend && npm install && npm run build`
+4. SPA HTML files go to `site/` (excluded from Jekyll processing)
+5. After Jekyll build, `cp -r site/* _site/` copies SPA files into the deployable output
+
+## jekyll-vite note
+
+`jekyll-vite` gem has no `lib/jekyll-vite.rb` (only `lib/jekyll/vite.rb`). The Gemfile uses `require: "jekyll/vite"` to load it. Do NOT add `jekyll-vite` to the `plugins:` list in `_config.yml` — Jekyll's plugin loader will try `require "jekyll-vite"` which fails.
