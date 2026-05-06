@@ -39,6 +39,9 @@ jobs:
       - name: Setup Ruby (lutaml)
         run: BUNDLE_GEMFILE=Gemfile.lutaml BUNDLE_PATH=vendor/bundle-lutaml bundle install
 
+      - name: Verify site bundle
+        run: bundle install --jobs 4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
