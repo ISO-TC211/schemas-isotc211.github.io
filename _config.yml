@@ -76,7 +76,6 @@ footer_links:
 
 exclude:
   - Gemfile
-  - Gemfile.lutaml
   - Gemfile.lock
   - Makefile
   - README.adoc
@@ -85,6 +84,7 @@ exclude:
   - generate_configs.rb
   - node_modules
   - vendor/
+  - schemas/vendor/
   - build/
   - configs/
   - .sass-cache/
