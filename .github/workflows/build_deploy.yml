@@ -51,11 +51,21 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
+      - name: Build lutaml-jsonschema frontend
+        run: |
+          GEM_DIR=$(BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle show lutaml-jsonschema)
+          cd "$GEM_DIR/frontend"
+          npm install
+          npm run build
+
       - name: Build LXR packages
         run: make configs lxr-spas
 
       - name: Build Jekyll site
         run: JEKYLL_ENV=production bundle exec jekyll build
+
+      - name: Copy SPA files into site output
+        run: cp -r site/* _site/ 2>/dev/null || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

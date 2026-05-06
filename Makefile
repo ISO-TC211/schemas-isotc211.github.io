@@ -2,9 +2,6 @@ SHELL := /bin/bash
 LUTAML_BUNDLE := BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml
 SITE_BUNDLE := BUNDLE_GEMFILE=Gemfile BUNDLE_PATH=vendor/bundle
 
-# Packages that build LXR but skip SPA generation (known xsdvi bugs)
-SPA_SKIP  :=
-
 all: configs lxr-spas _site
 
 # Generate per-schema config files, index JSON, and Makefile.spa
@@ -15,14 +12,16 @@ configs: schemas_index.json ;
 
 # Build all LXR + SPA packages
 lxr-spas: configs
+	@GEM_DIR=$$($(LUTAML_BUNDLE) bundle show lutaml-jsonschema 2>/dev/null) && \
+		[ -d "$$GEM_DIR/frontend/dist" ] || { cd "$$GEM_DIR/frontend" && npm install && npm run build; } || true
 	$(MAKE) build-all
 
 build-all:
-	$(MAKE) -j4 $(LXR_FILES) $(SPA_OK)
+	$(MAKE) -j4 $(LXR_FILES) $(SPA_FILES)
 
 CONFIGS   := $(wildcard configs/*.yml)
 LXR_FILES := $(patsubst configs/%.yml,build/%.lxr,$(CONFIGS))
-SPA_OK    := $(filter-out $(foreach s,$(SPA_SKIP),site/$(s).html),)
+SPA_FILES :=
 
 # Build a single LXR package from a config
 build/%.lxr: configs/%.yml
@@ -36,6 +35,7 @@ build/%.lxr: configs/%.yml
 # Build Jekyll site
 _site: lxr-spas
 	JEKYLL_ENV=production bundle exec jekyll build
+	cp -r site/* _site/ 2>/dev/null || true
 
 # Dev server
 serve:
