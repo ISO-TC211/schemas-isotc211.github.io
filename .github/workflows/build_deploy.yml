@@ -51,6 +51,19 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
+      - name: Debug bundle state
+        run: |
+          echo "=== .bundle/config ==="
+          cat .bundle/config
+          echo "=== Bundle show jekyll-vite ==="
+          bundle show jekyll-vite || echo "NOT FOUND"
+          echo "=== Gems in vendor/bundle ==="
+          ls vendor/bundle/ruby/3.3.0/gems/ | grep -E "vite|jekyll" || echo "No matches"
+          echo "=== BUNDLE_PATH env ==="
+          echo "BUNDLE_PATH=${BUNDLE_PATH:-not set}"
+          echo "=== Bundle env ==="
+          bundle env
+
       - name: Build all
         run: make all
 
