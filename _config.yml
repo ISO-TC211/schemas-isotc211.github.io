@@ -53,18 +53,34 @@ nav:
   - title: ISO/TC 211 Resources
     url: https://www.isotc211.org
 
-source: build_source
-include:
-  - build_source
-
 exclude:
   - Gemfile
+  - Gemfile.lutaml
   - Gemfile.lock
   - Makefile
+  - README.adoc
+  - CLAUDE.md
   - deploy.sh
+  - generate_configs.rb
+  - lxr_packages.yml
+  - json_packages.yml
   - node_modules
-  - vendor/bundle/
-  - vendor/cache/
-  - vendor/gems/
-  - vendor/ruby/
+  - vendor/
+  - build/
+  - configs/
   - .sass-cache/
+  - .jekyll-cache/
+  - .vite/
+  - .archive/
+  - xsdvi/
+  - xsl/
+
+include:
+  - site
+  - schemas
+  - schemas_index.json
+  - resources_index.json
+
+plugins:
+  - jekyll-feed
+  - jekyll-redirect-from

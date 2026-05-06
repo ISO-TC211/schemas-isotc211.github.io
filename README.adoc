@@ -2,16 +2,15 @@
 
 image:https://github.com/ISO-TC211/schemas-isotc211.github.io/actions/workflows/build_deploy.yml/badge.svg["build-deploy", link="https://github.com/ISO-TC211/schemas-isotc211.github.io/actions/workflows/build_deploy.yml"]
 
-image:https://github.com/ISO-TC211/schemas-isotc211.github.io/actions/workflows/links.yml/badge.svg["build-deploy", link="https://github.com/ISO-TC211/schemas-isotc211.github.io/actions/workflows/links.yml"]
-
 
 == Introduction
 
-The ISO/TC 211 XML Schemas site is used to publish XML schemas published by
-ISO/TC 211 standards.
+The ISO/TC 211 XML Schemas site publishes XML schemas from ISO/TC 211 standards at
+https://schemas.isotc211.org. Each schema package has:
 
-This repository is used to build and deploy the https://schemas.isotc211.org
-site.
+* **Downloadable XSD files** at `https://schemas.isotc211.org/schemas/{standard}/{part}/{prefix}/{version}/`
+* **Interactive schema browsers** (lutaml-xsd SPA) per standard+part+version
+* **A card-based index page** with ISO visual styling
 
 This repository is jointly managed by ISO/TC 211 and operated by Ribose under
 the ISO/TC 211 Harmonized Resources Maintenance Agency (HRMA) run by the Swedish
@@ -20,53 +19,91 @@ Institute of Standards (SIS).
 
 == Building the site
 
-Use the Makefile for building the site, which internally uses the `hrma` gem
-given in the `schemas/` directory.
-
 [source,sh]
 ----
-# removes site artifacts
-make clean
-
-# builds schema documentation and builds _site
+# Full build (XSD downloads + index page + schema browsers)
 make all
 
-# starts a local server
+# Generate per-package config files from the manifest
+make configs
+
+# Build a single LXR package
+make build/19136-gml-1.0.lxr
+
+# Generate a single schema browser
+make site/19136-gml-1.0.html
+
+# Build just the index page
+make site/index.html
+
+# Local dev server on http://localhost:4000
 make serve
+
+# Clean all build artifacts
+make clean
 ----
+
+=== Prerequisites
+
+* Ruby 3.3 with Bundler
+* Node.js 20 with npm
+* Git submodule (`schemas/`) initialized: `make update-init`
 
 
 == Project Structure
 
-* `schemas/` - Contains the ISO/TC 211 schema files and documentation generator
-* `source/` - Contains the source files for the Jekyll site
-* `build_source/` - Temporary build directory (generated)
-* `_site/` - Final site output directory (generated)
-* `Makefile` - Build system
-* `.github/` - GitHub Actions workflows and configuration
+* `schemas/` — Git submodule (ISO-TC211/schemas), contains XSD files + `lxr_packages.yml`
+* `vendor_schemas/` — Helper schemas (xlink, w3c, OGC sensorML/sweCommon)
+* `lxr_packages.yml` — Local copy of the package manifest (fallback until submodule is updated)
+* `generate_configs.rb` — Generates lutaml-xsd configs + `schemas_index.json` from the manifest
+* `configs/` — Auto-generated lutaml-xsd configs (generated)
+* `build/` — Intermediate LXR packages (generated)
+* `site/` — Final deployable output (generated)
+** `index.html` — Card-based index page (Vite + Tailwind CSS)
+** `schemas/` — XSD files for download
+** `*.html` — Per-standard schema browsers
+** `schemas_index.json` — Package data for the frontend
+* `frontend/` — Vite + Tailwind CSS v4 index page source
+* `Makefile` — Build orchestration
+* `.github/` — GitHub Actions workflows
 
-== Documentation and tools
 
-For more detailed documentation on the `hrma` tool and how to manage schemas,
-see the README in the `schemas/` directory.
+== Schema Documentation (lutaml-xsd)
 
-The `hrma` tool provides commands for:
+Schema documentation is generated using the `lutaml-xsd` gem, which creates
+interactive Vue.js SPA browsers from XSD files.
 
-* Managing the schema manifest file (`schemas.yml`)
-* Generating documentation for schemas
-* Cleaning up generated files
+One LXR package is created per standard+part+version (~30 packages).
+Packages defined as broken are temporarily skipped for SPA generation
+(see `SPA_SKIP` in the Makefile) but XSD files remain downloadable.
 
 [source,sh]
 ----
-# Show available commands
-cd schemas && bundle exec hrma help
+# Generate config files from the manifest
+ruby generate_configs.rb
 
-# Show help for a specific command
-cd schemas && bundle exec hrma build help
+# Build a single schema package
+make build/19136-gml-1.0.lxr
 
-# Generate schema documentation
-cd schemas && bundle exec hrma build documentation
-
-# Clean all generated files
-cd schemas && bundle exec hrma build clean
+# Generate a single schema browser
+make site/19136-gml-1.0.html
 ----
+
+
+== Package Manifest
+
+The canonical package manifest (`lxr_packages.yml`) lives in the
+https://github.com/ISO-TC211/schemas[schemas submodule repo].
+File paths are relative to that repo's root (e.g., `19103/-/gco/1.2.0/gco.xsd`).
+
+Schema authors validate the manifest with:
+
+[source,sh]
+----
+cd schemas/
+bundle exec hrma lxr validate
+----
+
+This ensures all referenced XSD files exist before the site builds.
+The site repo reads the manifest from the submodule and adds
+schema location mappings, appearance config, and build settings.

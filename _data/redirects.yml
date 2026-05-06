@@ -1,0 +1,92 @@
+# Redirect mappings for moved files
+# Generated from schemas/ restructure phases 1-4
+
+# Phase 1: Legacy directory normalization
+- from: /schemas/19155/gpi/1.0/gpi.xsd
+  to: /schemas/19155/-/gpi/1.0/gpi.xsd
+- from: /schemas/19155/gpi/1.0/placeIdentifier.xsd
+  to: /schemas/19155/-/gpi/1.0/placeIdentifier.xsd
+- from: /schemas/19155/gpi/1.0/sampleGMLApplicationSchema.xsd
+  to: /schemas/19155/-/gpi/1.0/sampleGMLApplicationSchema.xsd
+- from: /schemas/19155/gpi/1.0/gpi.zip
+  to: /schemas/19155/resources/bundles/gpi-1.0.zip
+- from: /schemas/19165/gpm/1.0/gpm.xsd
+  to: /schemas/19165/-/gpm/1.0/gpm.xsd
+- from: /schemas/19165/gpm/1.0/geospatialPreservationMetadata.xsd
+  to: /schemas/19165/-/gpm/1.0/geospatialPreservationMetadata.xsd
+- from: /schemas/19165/gpm/1.0/examples/localSchema.xml
+  to: /schemas/19165/-/gpm/1.0/examples/localSchema.xml
+- from: /schemas/19165/gpm/1.0/examples/of5mv60sd0f279110s1r100ca5-gpm.xml
+  to: /schemas/19165/-/gpm/1.0/examples/of5mv60sd0f279110s1r100ca5-gpm.xml
+- from: /schemas/19110/fcc/1.0/fcc.xsd
+  to: /schemas/19110/-/fcc/1.0/fcc.xsd
+- from: /schemas/19110/fcc/1.0/abstract.xsd
+  to: /schemas/19110/-/fcc/1.0/abstract.xsd
+- from: /schemas/19110/fcc/1.0/fcc.png
+  to: /schemas/19110/-/fcc/1.0/fcc.png
+- from: /schemas/19110/fcc/1.0/index.adoc
+  to: /schemas/19110/-/fcc/1.0/index.adoc
+- from: /schemas/19110/fcc/1.0/fcc.zip
+  to: /schemas/19110/resources/bundles/fcc-1.0.zip
+- from: /schemas/19110/gfc/1.1/gfc.xsd
+  to: /schemas/19110/-/gfc/1.1/gfc.xsd
+- from: /schemas/19110/gfc/1.1/featureCatalogue.xsd
+  to: /schemas/19110/-/gfc/1.1/featureCatalogue.xsd
+- from: /schemas/19110/gfc/1.1/gfc.png
+  to: /schemas/19110/-/gfc/1.1/gfc.png
+- from: /schemas/19110/gfc/1.1/index.adoc
+  to: /schemas/19110/-/gfc/1.1/index.adoc
+- from: /schemas/19110/gfc/1.1/gfc.zip
+  to: /schemas/19110/resources/bundles/gfc-1.1.zip
+- from: /schemas/19111/rbc/1.0/index.adoc
+  to: /schemas/19111/-/rbc/1.0/index.adoc
+- from: /schemas/19111/rce/1.0/index.adoc
+  to: /schemas/19111/-/rce/1.0/index.adoc
+- from: /schemas/19119/srv/srv.xsd
+  to: /schemas/19119/-/srv/1.0/srv.xsd
+- from: /schemas/19119/srv/serviceMetadata.xsd
+  to: /schemas/19119/-/srv/1.0/serviceMetadata.xsd
+- from: /schemas/19119/srv/serviceModel.xsd
+  to: /schemas/19119/-/srv/1.0/serviceModel.xsd
+
+# Phase 2: Examples moved to subdirs
+- from: /schemas/19155/gpi/1.0/point.xml
+  to: /schemas/19155/-/gpi/1.0/examples/point.xml
+- from: /schemas/19155/gpi/1.0/referenceSystem.xml
+  to: /schemas/19155/-/gpi/1.0/examples/referenceSystem.xml
+- from: /schemas/19155/gpi/1.0/sampleGMLApplicationSchema.xml
+  to: /schemas/19155/-/gpi/1.0/examples/sampleGMLApplicationSchema.xml
+- from: /schemas/19110/gfc/1.1/exampleInstance.xml
+  to: /schemas/19110/-/gfc/1.1/examples/exampleInstance.xml
+- from: /schemas/19157/-2/mdq/1.0/mdq_valid.xml
+  to: /schemas/19157/-2/mdq/1.0/examples/mdq_valid.xml
+- from: /schemas/19157/-2/mdq/1.0/mdq_invalid.xml
+  to: /schemas/19157/-2/mdq/1.0/examples/mdq_invalid.xml
+- from: /schemas/19157/-2/mdq/1.0/mdq.xml
+  to: /schemas/19157/-2/mdq/1.0/examples/mdq.xml
+- from: /schemas/19157/-2/dqm/1.0/dqm_valid.xml
+  to: /schemas/19157/-2/dqm/1.0/examples/dqm_valid.xml
+- from: /schemas/19157/-2/dqm/1.0/dqm_invalid.xml
+  to: /schemas/19157/-2/dqm/1.0/examples/dqm_invalid.xml
+- from: /schemas/19157/-2/dqm/1.0/dqm.xml
+  to: /schemas/19157/-2/dqm/1.0/examples/dqm.xml
+
+# Phase 3: Resources consolidated
+- from: /schemas/19115/resources/Codelist/
+  to: /schemas/19115/resources/codelists-gml/
+- from: /schemas/19115/resources/Schematron/
+  to: /schemas/19115/resources/schematron/
+- from: /schemas/19115/resources/namespaceInformationAndTools/
+  to: /schemas/19115/resources/namespace-tools/
+- from: /schemas/19157/resources/Codelists/
+  to: /schemas/19157/resources/codelists/
+- from: /schemas/19139/-/resources/
+  to: /schemas/19139/resources/
+
+# Phase 4: ZIP bundles moved
+- from: /schemas/19110/19110.zip
+  to: /schemas/19110/resources/bundles/19110.zip
+- from: /schemas/19155/19155.zip
+  to: /schemas/19155/resources/bundles/19155.zip
+- from: /schemas/19157/19157.zip
+  to: /schemas/19157/resources/bundles/19157.zip

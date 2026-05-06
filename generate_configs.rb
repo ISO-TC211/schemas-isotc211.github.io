@@ -1,0 +1,361 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "yaml"
+require "json"
+
+module SchemaIndex
+  SCHEMA_LOCATION_MAPPINGS = [
+    { "from" => '^http://schemas\.opengis\.net/gml/3\.2\.1/(.+\.xsd)$',
+      "to" => "../schemas/19136/-/gml/1.0/\\1", "pattern" => true },
+    { "from" => "http://schemas.opengis.net/gml/3.1.1/base/gml.xsd",
+      "to" => "../schemas/19136/-/gml/1.0/gml.xsd", "pattern" => false },
+    { "from" => '^http://schemas\.opengis\.net/gml/3\.1\.1/(?:base/)?(.+\.xsd)$',
+      "to" => "../schemas/19136/-/gml/1.0/\\1", "pattern" => true },
+    { "from" => "http://www.w3.org/1999/xlink.xsd",
+      "to" => "../vendor_schemas/xlink/xlinks.xsd", "pattern" => false },
+    { "from" => "https://www.w3.org/1999/xlink.xsd",
+      "to" => "../vendor_schemas/xlink/xlinks.xsd", "pattern" => false },
+    { "from" => "http://www.w3.org/2001/xml.xsd",
+      "to" => "../vendor_schemas/w3c/xml.xsd", "pattern" => false },
+
+    # Double schemas/ prefix: schemas.isotc211.org/schemas/X
+    { "from" => '^https://schemas\.isotc211\.org/schemas/(.+\.xsd)$',
+      "to" => "../schemas/\\1", "pattern" => true },
+
+    # Moved directories: HTTPS URLs for old paths → new local paths
+    { "from" => '^https://schemas\.isotc211\.org/19110/fcc/(.+\.xsd)$',
+      "to" => "../schemas/19110/-/fcc/\\1", "pattern" => true },
+    { "from" => '^https://schemas\.isotc211\.org/19110/gfc/(.+\.xsd)$',
+      "to" => "../schemas/19110/-/gfc/\\1", "pattern" => true },
+    { "from" => '^https://schemas\.isotc211\.org/19111/rbc/(.+\.xsd)$',
+      "to" => "../schemas/19111/-/rbc/\\1", "pattern" => true },
+    { "from" => '^https://schemas\.isotc211\.org/19111/rce/(.+\.xsd)$',
+      "to" => "../schemas/19111/-/rce/\\1", "pattern" => true },
+    { "from" => '^https://schemas\.isotc211\.org/19155/gpi/(.+\.xsd)$',
+      "to" => "../schemas/19155/-/gpi/\\1", "pattern" => true },
+    { "from" => '^https://schemas\.isotc211\.org/19165/gpm/(.+\.xsd)$',
+      "to" => "../schemas/19165/-/gpm/\\1", "pattern" => true },
+    { "from" => '^https://schemas\.isotc211\.org/19119/srv/(.+\.xsd)$',
+      "to" => "../schemas/19119/-/srv/\\1", "pattern" => true },
+
+    # Catch-all: isotc211.org HTTPS → local schemas dir
+    { "from" => '^https://schemas\.isotc211\.org/(.+\.xsd)$',
+      "to" => "../schemas/\\1", "pattern" => true },
+    { "from" => '^http://schemas\.opengis\.net/sensorML/2\.0/(.+\.xsd)$',
+      "to" => "../vendor_schemas/ogc/sensorML/2.0/\\1", "pattern" => true },
+    { "from" => '^http://schemas\.opengis\.net/sweCommon/2\.0/(.+\.xsd)$',
+      "to" => "../vendor_schemas/ogc/sweCommon/2.0/\\1", "pattern" => true },
+  ].freeze
+
+  NAMESPACE_MAPPINGS = [
+    { "prefix" => "xs", "uri" => "http://www.w3.org/2001/XMLSchema" },
+    { "prefix" => "gml", "uri" => "http://www.opengis.net/gml/3.2" },
+    { "prefix" => "xlink", "uri" => "http://www.w3.org/1999/xlink" },
+  ].freeze
+
+  APPEARANCE = {
+    "logos" => {
+      "lutaml_logo" => {
+        "light" => { "url" => "https://raw.githubusercontent.com/lutaml/branding/main/svg/lutaml-logo_logo-full-light.svg" },
+        "dark" => { "url" => "https://raw.githubusercontent.com/lutaml/branding/main/svg/lutaml-logo_logo-full-dark.svg" },
+      },
+    },
+    "colors" => {
+      "primary" => "#0061ad",
+      "primary_light" => "#3385d6",
+      "primary_dark" => "#003f73",
+      "accent" => "#e3000f",
+      "background_primary" => "#ffffff",
+      "background_secondary" => "#f8fafc",
+    },
+    "typography" => {
+      "font_family" => "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+      "mono_font_family" => "'JetBrains Mono', 'Noto Sans Mono', Consolas, monospace",
+    },
+  }.freeze
+
+  RESOURCE_CATEGORIES = {
+    "transforms"   => { glob: "*/resources/transforms/**/*.xsl",   label: "XSLT Transforms" },
+    "schematron"   => { glob: "**/*.sch",                          label: "Schematron Rules" },
+    "examples_xml" => { glob: "**/examples/*.xml",                 label: "XML Examples" },
+    "examples_json"=> { glob: "**/examples/*.json",                label: "JSON Examples" },
+    "codelists"    => { glob: "*/resources/codelists/**/*.xml",    label: "Codelist Dictionaries" },
+    "bundles"      => { glob: "*/resources/bundles/**/*.zip",      label: "Download Packages" },
+  }.freeze
+
+  # ── Package base class ──
+
+  class Package
+    attr_reader :name, :title, :description, :standard, :status, :files, :version
+
+    def initialize(attrs)
+      @name = attrs["name"]
+      @title = attrs["title"] || @name
+      @description = attrs["description"] || "Interactive documentation for #{@title}."
+      @standard = attrs["standard"]
+      @status = attrs["status"] || "current"
+      @files = attrs["files"] || []
+      @version = extract_version
+    end
+
+    def type
+      raise NotImplementedError
+    end
+
+    def has_spa?
+      raise NotImplementedError
+    end
+
+    def to_index_entry
+      {
+        "name" => @title,
+        "slug" => @name,
+        "version" => @version,
+        "status" => @status,
+        "standard" => @standard,
+        "description" => @description,
+        "type" => type,
+        "has_spa" => has_spa?,
+        "file_paths" => @files.map { |f| "schemas/#{f}" },
+      }
+    end
+
+    def validate!(schemas_dir)
+      @files.each do |f|
+        path = File.join(schemas_dir, f)
+        unless File.exist?(path)
+          $stderr.puts "  ERROR: #{@name}: #{f} not found at #{path}"
+          raise "Missing file: #{f}"
+        end
+      end
+    end
+
+    private
+
+    def extract_version
+      match = @name.match(/[\d.]+$/)
+      match ? match[0] : "1.0"
+    end
+  end
+
+  # ── XSD Package ──
+
+  class XsdPackage < Package
+    def type = "xsd"
+    def has_spa? = true
+
+    def browser_path
+      "site/#{@name}.html"
+    end
+
+    def to_index_entry
+      super.merge("browser_path" => browser_path, "xsd_paths" => @files.map { |f| "schemas/#{f}" })
+    end
+
+    def generate_config(schemas_dir, config_dir)
+      all_files = discover_all_xsd_files(schemas_dir)
+      config = {
+        "metadata" => build_metadata,
+        "build" => {
+          "xsd_mode" => "include_all",
+          "resolution_mode" => "resolved",
+          "serialization_format" => "marshal",
+        },
+        "files" => all_files,
+        "schema_location_mappings" => SCHEMA_LOCATION_MAPPINGS,
+        "namespace_mappings" => NAMESPACE_MAPPINGS,
+        "appearance" => APPEARANCE,
+      }
+
+      path = File.join(config_dir, "#{@name}.yml")
+      File.write(path, YAML.dump(config))
+      puts "Generated: #{path}"
+    end
+
+    private
+
+    def build_metadata
+      {
+        "name" => @name,
+        "version" => "1.0.0",
+        "title" => @title,
+        "description" => @description,
+        "license" => "ISO",
+        "authors" => [{ "name" => "ISO/TC 211" }],
+        "links" => [
+          { "name" => "Homepage", "url" => "https://schemas.isotc211.org" },
+          { "name" => "Repository", "url" => "https://github.com/ISO-TC211/schemas-isotc211.github.io" },
+          { "name" => "Get Started with LutaML XSD", "url" => "https://lutaml.github.io/lutaml-xsd/getting-started" },
+        ],
+      }
+    end
+
+    def discover_all_xsd_files(schemas_dir)
+      dirs = @files.map { |f| File.join(schemas_dir, File.dirname(f)) }.uniq
+      all = dirs.flat_map { |dir| Dir.glob(File.join(dir, "*.xsd")).sort }
+      all.uniq.sort.map { |f| "../#{f.delete_prefix("#{File.dirname(schemas_dir)}/")}" }
+    end
+  end
+
+  # ── JSON Package ──
+
+  class JsonPackage < Package
+    def type = "json"
+    def has_spa? = false
+  end
+
+  # ── Resource Scanner ── auto-discovers resources from filesystem
+
+  class ResourceScanner
+    def initialize(schemas_dir, descriptions_file = nil)
+      @schemas_dir = schemas_dir
+      @descriptions = load_descriptions(descriptions_file)
+    end
+
+    def scan
+      RESOURCE_CATEGORIES.each_with_object({}) do |(category, config), result|
+        files = Dir.glob(config[:glob], base: @schemas_dir).sort
+        result[category] = files.map { |f| build_entry(f, category) }
+      end
+    end
+
+    def scan_by_standard(packages)
+      standards = packages.map { |p| p.standard }.uniq.sort
+      resources = scan
+
+      standards.each_with_object({}) do |std, result|
+        std_resources = {}
+        resources.each do |category, files|
+          matching = files.select { |f| f["path"].start_with?("#{std}/") || f["path"].start_with?("json/#{std}/") }
+          std_resources[category] = matching unless matching.empty?
+        end
+        result[std] = std_resources unless std_resources.empty?
+      end
+    end
+
+    def compute_resource_counts(packages)
+      resources = scan_by_standard(packages)
+      packages.each_with_object({}) do |pkg, counts|
+        std_resources = resources[pkg.standard] || {}
+        total = {}
+        std_resources.each { |cat, files| total[cat] = files.size }
+        counts[pkg.name] = total unless total.empty?
+      end
+    end
+
+    private
+
+    def build_entry(path, _category)
+      {
+        "path" => path,
+        "name" => File.basename(path),
+        "description" => @descriptions[path] || humanize_filename(File.basename(path)),
+      }
+    end
+
+    def humanize_filename(name)
+      ext = File.extname(name)
+      base = File.basename(name, ext)
+      base.gsub(/[-_]/, " ").sub(/(\d+\.\d+(?:\.\d+)?)/, '(\1)').strip
+    end
+
+    def load_descriptions(file)
+      return {} unless file && File.exist?(file)
+      YAML.load_file(file) || {}
+    rescue StandardError
+      {}
+    end
+  end
+
+  # ── Generator ──
+
+  class Generator
+    def initialize(base_dir)
+      @base_dir = base_dir
+      @schemas_dir = File.join(base_dir, "schemas")
+      @config_dir = File.join(base_dir, "configs")
+      @descriptions_file = File.join(base_dir, "resource_descriptions.yml")
+    end
+
+    def run
+      packages = load_packages
+      validate_all(packages)
+      generate_configs(packages)
+      write_index(packages)
+      write_resources_index(packages)
+      puts "\n#{packages.size} packages configured."
+    end
+
+    private
+
+    def load_packages
+      packages = load_manifest("lxr_packages.yml", XsdPackage)
+      packages += load_manifest("json_packages.yml", JsonPackage)
+      packages
+    end
+
+    def load_manifest(filename, klass)
+      path = File.join(@schemas_dir, filename)
+      path = File.join(@base_dir, filename) unless File.exist?(path)
+      return [] unless File.exist?(path)
+
+      manifest = YAML.load_file(path)
+      (manifest["packages"] || []).map { |attrs| klass.new(attrs) }
+    end
+
+    def validate_all(packages)
+      errors = []
+      packages.each do |pkg|
+        begin
+          pkg.validate!(@schemas_dir)
+        rescue StandardError
+          errors << pkg.name
+        end
+      end
+      unless errors.empty?
+        $stderr.puts "ERROR: #{errors.size} package(s) have missing files"
+        exit 1
+      end
+    end
+
+    def generate_configs(packages)
+      Dir.mkdir(@config_dir) unless Dir.exist?(@config_dir)
+
+      packages.each do |pkg|
+        if pkg.is_a?(XsdPackage)
+          pkg.generate_config(@schemas_dir, @config_dir)
+        else
+          puts "Indexed (#{pkg.type}): #{pkg.name}"
+        end
+      end
+    end
+
+    def write_index(packages)
+      scanner = ResourceScanner.new(@schemas_dir, @descriptions_file)
+      resource_counts = scanner.compute_resource_counts(packages)
+
+      index = packages.map do |pkg|
+        entry = pkg.to_index_entry
+        counts = resource_counts[pkg.name]
+        entry["resource_counts"] = counts if counts && !counts.empty?
+        entry
+      end
+
+      path = File.join(@base_dir, "schemas_index.json")
+      File.write(path, JSON.pretty_generate(index))
+      puts "Generated: #{path}"
+    end
+
+    def write_resources_index(packages)
+      scanner = ResourceScanner.new(@schemas_dir, @descriptions_file)
+      resources = scanner.scan_by_standard(packages)
+
+      path = File.join(@base_dir, "resources_index.json")
+      File.write(path, JSON.pretty_generate("standards" => resources))
+      puts "Generated: #{path}"
+    end
+  end
+end
+
+SchemaIndex::Generator.new(__dir__).run
