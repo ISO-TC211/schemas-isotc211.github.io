@@ -103,5 +103,4 @@ include:
 plugins:
   - jekyll-feed
   - jekyll-redirect-from
-  - jekyll-vite
 
