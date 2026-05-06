@@ -14,6 +14,15 @@ GIT
       rubyzip (~> 2.3)
       thor
 
+PATH
+  remote: ../../lutaml/lutaml-jsonschema
+  specs:
+    lutaml-jsonschema (0.1.1)
+      json
+      liquid (>= 4.0, < 6.0)
+      lutaml-model (~> 0.8.0)
+      thor (~> 1.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -120,6 +129,7 @@ PLATFORMS
 
 DEPENDENCIES
   canon
+  lutaml-jsonschema!
   lutaml-model!
   lutaml-xsd (~> 1.1)
   moxml
@@ -142,6 +152,7 @@ CHECKSUMS
   ffi (1.17.4-x86_64-linux-musl) sha256=3fdf9888483de005f8ef8d1cf2d3b20d86626af206cbf780f6a6a12439a9c49e
   json (2.19.5) sha256=218a18553e4801d579ca7e0f5bc72bafd776d7397238a1fb4e74db5b0a812c59
   liquid (5.12.0) sha256=5a3c2c2430cd925d21c53e4ed9abea52cd0a9da53b541422f81dee79aca2a673
+  lutaml-jsonschema (0.1.1)
   lutaml-model (0.8.3)
   lutaml-xsd (1.1.0) sha256=09ee252c322db77d3e76449c6a183b7990936e822f6fcd4e50f99b6eb78a9ee2
   memo_wise (1.13.0) sha256=30220c38c4cef410849bc73553c58664dc2c91c6379e4a1df22aea02358b716b

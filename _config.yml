@@ -55,8 +55,24 @@ powered_by:
   logo_path: /assets/logo-ribose.svg
 
 nav:
+  - title: News
+    url: /news/
   - title: ISO/TC 211 Resources
     url: https://www.isotc211.org
+
+footer_links:
+  - title: Main Site
+    url: https://www.isotc211.org
+  - title: Standards
+    url: https://standards.isotc211.org/
+  - title: Geodetic Registry
+    url: https://geodetic.isotc211.org/
+  - title: UML Models
+    url: http://iso.sparxcloud.com/index.php
+  - title: Terminology
+    url: https://isotc211.geolexica.org/
+  - title: Ontologies
+    url: https://def.isotc211.org
 
 exclude:
   - Gemfile
