@@ -8,36 +8,32 @@ image:https://github.com/ISO-TC211/schemas-isotc211.github.io/actions/workflows/
 The ISO/TC 211 XML Schemas site publishes XML schemas from ISO/TC 211 standards at
 https://schemas.isotc211.org. Each schema package has:
 
-* **Downloadable XSD files** at `https://schemas.isotc211.org/schemas/{standard}/{part}/{prefix}/{version}/`
+* **Downloadable XSD files** at `https://schemas.isotc211.org/schemas/{standard}/{-part}/{module}/{version}/`
 * **Interactive schema browsers** (lutaml-xsd SPA) per standard+part+version
-* **A card-based index page** with ISO visual styling
+* **Per-standard landing pages** at `/{standard}/` with namespace dereference pages
+* **A resource catalog** at `/resources/` (transforms, schematron, examples, codelists, bundles)
+* **A card-based index page** with filter by standard/name/description
 
-This repository is jointly managed by ISO/TC 211 and operated by Ribose under
-the ISO/TC 211 Harmonized Resources Maintenance Agency (HRMA) run by the Swedish
-Institute of Standards (SIS).
+This repository is jointly managed by ISO/TC 211 and operated by Ribose.
 
 
 == Building the site
 
 [source,sh]
 ----
-# Full build (XSD downloads + index page + schema browsers)
-make all
+# Full build + local dev server (the standard test command)
+make clean all serve
 
-# Generate per-package config files from the manifest
-make configs
+# Individual steps
+make configs          # Generate per-package lutaml-xsd configs + indexes
+make lxr-spas         # Build all LXR packages + SPA HTMLs
+make _site            # Build the Jekyll site into _site/
 
 # Build a single LXR package
 make build/19136-gml-1.0.lxr
 
 # Generate a single schema browser
 make site/19136-gml-1.0.html
-
-# Build just the index page
-make site/index.html
-
-# Local dev server on http://localhost:4000
-make serve
 
 # Clean all build artifacts
 make clean
@@ -47,63 +43,59 @@ make clean
 
 * Ruby 3.3 with Bundler
 * Node.js 20 with npm
-* Git submodule (`schemas/`) initialized: `make update-init`
+* Git submodules initialized: `make update-init update-modules`
+* Two Gemfiles: `Gemfile` (Jekyll) and `Gemfile.lutaml` (lutaml-xsd) — they have conflicting liquid version requirements
 
 
-== Project Structure
+== Architecture
 
-* `schemas/` — Git submodule (ISO-TC211/schemas), contains XSD files + `lxr_packages.yml`
-* `vendor_schemas/` — Helper schemas (xlink, w3c, OGC sensorML/sweCommon)
-* `lxr_packages.yml` — Local copy of the package manifest (fallback until submodule is updated)
-* `generate_configs.rb` — Generates lutaml-xsd configs + `schemas_index.json` from the manifest
-* `configs/` — Auto-generated lutaml-xsd configs (generated)
-* `build/` — Intermediate LXR packages (generated)
-* `site/` — Final deployable output (generated)
-** `index.html` — Card-based index page (Vite + Tailwind CSS)
-** `schemas/` — XSD files for download
-** `*.html` — Per-standard schema browsers
-** `schemas_index.json` — Package data for the frontend
-* `frontend/` — Vite + Tailwind CSS v4 index page source
-* `Makefile` — Build orchestration
-* `.github/` — GitHub Actions workflows
+The site is a Jekyll site using the `jekyll-theme-isotc211` gem with Vite + Tailwind CSS v4.
+Architecture: **1 standard+part+version → 1 LXR package → 1 SPA HTML file**, all listed on the index page.
+
+[cols="1,3"]
+|===
+| Directory | Purpose
+
+| `schemas/` | Git submodule (ISO-TC211/schemas). MECE directory structure:
+              `{standard}/{-part}/{module}/{version}/*.xsd`,
+              `{standard}/resources/{transforms,codelists,schematron,bundles}/`,
+              `json/{standard}/{-part}/{module}/{version}/*.json`
+
+| `vendor_schemas/` | Helper schemas for LXR builds (xlink, w3c/xml.xsd, OGC sensorML/sweCommon)
+
+| `lxr_packages.yml` | XSD package manifest — title, description, status, file paths
+| `json_packages.yml` | JSON schema package manifest
+
+| `generate_configs.rb` | Reads manifests + auto-discovers resources from filesystem.
+                          Outputs: per-package configs in `configs/`, `schemas_index.json`, `resources_index.json`
+
+| `configs/` | Auto-generated per-package lutaml-xsd configs (generated, gitignored)
+| `build/` | Intermediate LXR packages `.lxr` (generated, gitignored)
+| `site/` | SPA HTML output from lutaml-xsd (generated, gitignored)
+
+| `_frontend/` | jekyll-vite frontend source
+| `_plugins/` | Jekyll plugins (build_source_generator, schema_pages_generator, redirect_generator)
+| `_pages/` | Jekyll pages (index, resources, docs, news)
+| `_data/redirects.yml` | Old→new URL redirect mappings
+
+| `_site/` | Final deployable output (generated, gitignored)
+|===
 
 
-== Schema Documentation (lutaml-xsd)
+== Plugins
 
-Schema documentation is generated using the `lutaml-xsd` gem, which creates
-interactive Vue.js SPA browsers from XSD files.
+[cols="1,3"]
+|===
+| Plugin | Purpose
 
-One LXR package is created per standard+part+version (~30 packages).
-Packages defined as broken are temporarily skipped for SPA generation
-(see `SPA_SKIP` in the Makefile) but XSD files remain downloadable.
-
-[source,sh]
-----
-# Generate config files from the manifest
-ruby generate_configs.rb
-
-# Build a single schema package
-make build/19136-gml-1.0.lxr
-
-# Generate a single schema browser
-make site/19136-gml-1.0.html
-----
+| `build_source_generator.rb` | Registers SPA HTMLs (`site/*.html`) and index JSONs as Jekyll static files
+| `schema_pages_generator.rb` | Generates per-standard pages (`/{standard}/`) and per-namespace dereference pages (`/{standard}/{part}/{module}/{version}/`)
+| `redirect_generator.rb` | Generates HTML redirect pages from `_data/redirects.yml`
+|===
 
 
 == Package Manifest
 
-The canonical package manifest (`lxr_packages.yml`) lives in the
-https://github.com/ISO-TC211/schemas[schemas submodule repo].
-File paths are relative to that repo's root (e.g., `19103/-/gco/1.2.0/gco.xsd`).
-
-Schema authors validate the manifest with:
-
-[source,sh]
-----
-cd schemas/
-bundle exec hrma lxr validate
-----
-
-This ensures all referenced XSD files exist before the site builds.
-The site repo reads the manifest from the submodule and adds
-schema location mappings, appearance config, and build settings.
+The package manifests (`lxr_packages.yml` for XSD, `json_packages.yml` for JSON) live in this repo.
+They provide human metadata (title, description, status). File paths and resources are
+auto-discovered from the filesystem by `generate_configs.rb`.
