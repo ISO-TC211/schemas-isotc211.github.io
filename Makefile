@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-LUTAML_BUNDLE := BUNDLE_GEMFILE=Gemfile.lutaml BUNDLE_PATH=vendor/bundle-lutaml
+LUTAML_BUNDLE := BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml
 SITE_BUNDLE := BUNDLE_GEMFILE=Gemfile BUNDLE_PATH=vendor/bundle
 
 # Packages that build LXR but skip SPA generation (known xsdvi bugs)

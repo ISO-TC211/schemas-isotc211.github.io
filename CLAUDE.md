@@ -16,17 +16,17 @@ Architecture: **1 standard+part+version → 1 LXR package → 1 SPA HTML file**,
 ## Two-Gemfile Architecture
 
 `lutaml-xsd` depends on `terminal-table` in a way incompatible with Jekyll ~> 4.3. They cannot share a single Gemfile:
-- **`Gemfile`** — Jekyll + jekyll-theme-isotc211 + jekyll-vite (for `bundle exec jekyll build/serve`)
-- **`Gemfile.lutaml`** — lutaml-xsd + lutaml-model + lutaml-jsonschema (for lutaml commands)
+- **`Gemfile`** (site repo) — Jekyll + jekyll-theme-isotc211 + jekyll-vite (for `bundle exec jekyll build/serve`)
+- **`schemas/Gemfile`** (submodule) — lutaml-xsd + lutaml-model + lutaml-jsonschema (for lutaml commands)
 
-The lutaml bundle uses a separate install path (`vendor/bundle-lutaml`) to avoid corrupting the Jekyll bundle. The Makefile uses `BUNDLE_GEMFILE=Gemfile.lutaml BUNDLE_PATH=vendor/bundle-lutaml` for all lutaml commands.
+The lutaml bundle uses a separate install path (`vendor/bundle-lutaml`) to avoid corrupting the Jekyll bundle. The Makefile uses `BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml` for all lutaml commands.
 
 ## Build Commands
 
 ```bash
 # Install dependencies (both Gemfiles + npm)
 bundle install
-BUNDLE_GEMFILE=Gemfile.lutaml BUNDLE_PATH=vendor/bundle-lutaml bundle install
+BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle install
 npm install
 
 # Full build (configs → LXR packages → SPA HTMLs → Jekyll site)
@@ -61,6 +61,7 @@ schemas/              → Git submodule (ISO-TC211/schemas), MECE directory stru
 vendor_schemas/       → Local helper schemas (xlink, w3c/xml.xsd, OGC sensorML/sweCommon)
 schemas/lxr_packages.yml → XSD package manifest (title, description, status, files)
 schemas/ljr_packages.yml → JSON schema package manifest
+schemas/Gemfile         → Lutaml build dependencies (lutaml-xsd, lutaml-model, lutaml-jsonschema)
 generate_configs.rb   → Reads manifests from schemas/ + auto-discovers resources from filesystem.
                         Generates: per-package lutaml-xsd configs, schemas_index.json,
                         resources_index.json
@@ -86,7 +87,7 @@ _config.yml           → Jekyll config (theme, plugins, nav, excludes)
 _data/redirects.yml   → Old→new path mappings for moved files
 _plugins/redirect_generator.rb → Generates HTML redirect pages from redirects.yml
 
-Gemfile               → All deps: Jekyll + lutaml-xsd + lutaml-jsonschema + jekyll-vite
+Gemfile               → Site deps: Jekyll + jekyll-theme-isotc211 + jekyll-vite
 Makefile              → Build orchestration
 ```
 

@@ -37,7 +37,7 @@ jobs:
           bundler-cache: true
 
       - name: Setup Ruby (lutaml)
-        run: BUNDLE_GEMFILE=Gemfile.lutaml BUNDLE_PATH=vendor/bundle-lutaml bundle install
+        run: BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle install
 
       - name: Verify site bundle
         run: bundle install --jobs 4
