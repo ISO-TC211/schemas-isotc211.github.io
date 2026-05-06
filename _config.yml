@@ -49,6 +49,10 @@ powered_by:
   title: Ribose
   logo_path: /assets/logo-ribose.svg
 
+nav:
+  - title: ISO/TC 211 Resources
+    url: https://www.isotc211.org
+
 source: build_source
 include:
   - build_source
