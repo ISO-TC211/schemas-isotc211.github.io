@@ -1,7 +1,12 @@
-title: XML schemas for ISO/TC 211 Geographic information/Geomatics
-title_html: XML&nbsp;schema representations of&nbsp;geographic&nbsp;technology standards
+title: ISO/TC 211 Implementation Schemas
+title_html: "ISO/TC 211 Implementation Schemas"
+brand_sub: "Harmonized Resources Maintenance Agency"
 
 theme: jekyll-theme-isotc211
+
+favicon_svg: /assets/favicon.svg
+favicon_ico: /assets/favicon.ico
+
 author: "ISO/TC 211"
 email: open.source@ribose.com
 
@@ -11,11 +16,11 @@ committee:
   home: https://committee.iso.org/home/tc211
 
 description: >-
-  The XML schema repository for geographic information technology
+  Implementation schemas for geographic information technology
   from ISO/TC 211 Geographic information/Geomatics.
 
 tagline: >-
-  XML schema repository for geographic information technology
+  Implementation schemas for geographic information technology
 
 markdown: kramdown
 
@@ -74,9 +79,9 @@ exclude:
   - .archive/
   - xsdvi/
   - xsl/
+  - site/
 
 include:
-  - site
   - schemas
   - schemas_index.json
   - resources_index.json
@@ -84,3 +89,4 @@ include:
 plugins:
   - jekyll-feed
   - jekyll-redirect-from
+  - jekyll-vite

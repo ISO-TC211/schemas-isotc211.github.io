@@ -4,5 +4,10 @@ source "https://rubygems.org"
 
 gem "lutaml-xsd", "~> 1.1"
 gem "lutaml-model", github: "lutaml/lutaml-model", branch: "main"
+if ENV["CI"] || !File.directory?(File.expand_path("../../lutaml/lutaml-jsonschema", __dir__))
+  gem "lutaml-jsonschema", github: "lutaml/lutaml-jsonschema"
+else
+  gem "lutaml-jsonschema", path: "../../lutaml/lutaml-jsonschema"
+end
 gem "moxml"
 gem "canon"
