@@ -35,10 +35,6 @@ build/%.lxr: configs/%.yml
 
 # Build Jekyll site
 _site: lxr-spas
-	@echo "=== Pre-build debug ==="
-	@cat .bundle/config || echo "No .bundle/config"
-	@bundle show jekyll-vite 2>&1 || echo "bundle show: NOT FOUND"
-	@BUNDLE_GEMFILE=Gemfile BUNDLE_PATH=vendor/bundle bundle show jekyll-vite 2>&1 || echo "with env vars: NOT FOUND"
 	JEKYLL_ENV=production bundle exec jekyll build
 
 # Dev server
