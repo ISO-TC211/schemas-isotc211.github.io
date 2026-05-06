@@ -59,9 +59,9 @@ schemas/              → Git submodule (ISO-TC211/schemas), MECE directory stru
                         {standard}/resources/{transforms,codelists,schematron,bundles}/
                         json/{standard}/{-part}/{module}/{version}/*.json
 vendor_schemas/       → Local helper schemas (xlink, w3c/xml.xsd, OGC sensorML/sweCommon)
-lxr_packages.yml      → XSD package manifest (title, description, status, files)
-json_packages.yml     → JSON schema package manifest
-generate_configs.rb   → Reads manifests + auto-discovers resources from filesystem.
+schemas/lxr_packages.yml → XSD package manifest (title, description, status, files)
+schemas/ljr_packages.yml → JSON schema package manifest
+generate_configs.rb   → Reads manifests from schemas/ + auto-discovers resources from filesystem.
                         Generates: per-package lutaml-xsd configs, schemas_index.json,
                         resources_index.json
 configs/              → Auto-generated per-package lutaml-xsd configs
@@ -107,7 +107,7 @@ The filesystem IS the database. `generate_configs.rb` contains a `ResourceScanne
 - JSON schema packages from manifest
 - Resources: transforms, schematron, examples, codelists, bundles (via glob patterns)
 
-Manifests (`lxr_packages.yml`, `json_packages.yml`) provide only human metadata (title, description, status). Everything else is auto-discovered.
+Manifests (`lxr_packages.yml`, `ljr_packages.yml`) provide only human metadata (title, description, status). Everything else is auto-discovered.
 
 Output files:
 - `schemas_index.json` — all packages with resource counts

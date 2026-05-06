@@ -83,8 +83,6 @@ exclude:
   - CLAUDE.md
   - deploy.sh
   - generate_configs.rb
-  - lxr_packages.yml
-  - json_packages.yml
   - node_modules
   - vendor/
   - build/

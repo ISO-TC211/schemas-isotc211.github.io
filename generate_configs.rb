@@ -326,14 +326,15 @@ module SchemaIndex
 
     def load_packages
       packages = load_manifest("lxr_packages.yml", XsdPackage)
-      packages += load_manifest("json_packages.yml", JsonPackage)
+      packages += load_manifest("ljr_packages.yml", JsonPackage)
       packages
     end
 
     def load_manifest(filename, klass)
       path = File.join(@schemas_dir, filename)
-      path = File.join(@base_dir, filename) unless File.exist?(path)
-      return [] unless File.exist?(path)
+      unless File.exist?(path)
+        raise "Manifest #{filename} not found in schemas/ — it must be defined in the schemas submodule"
+      end
 
       manifest = YAML.load_file(path)
       (manifest["packages"] || []).map { |attrs| klass.new(attrs) }
