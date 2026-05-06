@@ -1,5 +1,6 @@
 SHELL := /bin/bash
-LUTAML_BUNDLE := BUNDLE_GEMFILE=Gemfile.lutaml
+LUTAML_BUNDLE := BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml
+SITE_BUNDLE := BUNDLE_GEMFILE=Gemfile BUNDLE_PATH=vendor/bundle
 
 # Packages that build LXR but skip SPA generation (known xsdvi bugs)
 SPA_SKIP  :=
@@ -38,13 +39,13 @@ _site: lxr-spas
 
 # Dev server
 serve:
-	bundle exec jekyll serve
+	$(SITE_BUNDLE) bundle exec jekyll serve
 
 clean:
 	rm -rf build site _site configs schemas_index.json resources_index.json
 
 distclean: clean
-	rm -rf schemas/_site
+	rm -rf schemas/_site vendor/bundle-lutaml
 
 update-init:
 	git submodule update --init

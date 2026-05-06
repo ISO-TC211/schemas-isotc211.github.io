@@ -1327,6 +1327,107 @@
     border-color: #334155;
   }
 
+  /* ── Resources section on standard pages ── */
+  .resources-section {
+    margin-top: 3rem;
+  }
+  .resources-section__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .dark .resources-section__title {
+    color: #e2e8f0;
+    border-color: #334155;
+  }
+  .resource-group {
+    margin-bottom: 1.5rem;
+  }
+  .resource-group__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 0.5rem;
+  }
+  .dark .resource-group__title {
+    color: #94a3b8;
+  }
+  .resource-group__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.375rem;
+  }
+  .resource-group__list li {
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    transition: background 0.15s;
+  }
+  .resource-group__list li:hover {
+    background: #f1f5f9;
+  }
+  .dark .resource-group__list li:hover {
+    background: #1e293b;
+  }
+  .resource-group__list a {
+    color: #0061ad;
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+  .dark .resource-group__list a {
+    color: #60a5fa;
+  }
+  .resource-group__list a:hover {
+    text-decoration: underline;
+  }
+  .resource-desc {
+    color: #64748b;
+    font-size: 0.8125rem;
+    margin-left: 0.5rem;
+  }
+  .dark .resource-desc {
+    color: #94a3b8;
+  }
+
+  /* ── Multiple file links on schema cards ── */
+  .schema-card__files {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+  }
+  .schema-card__files-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+  }
+  .dark .schema-card__files-label {
+    color: #94a3b8;
+  }
+  .schema-card__files a {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    background: #f1f5f9;
+    color: #334155;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .dark .schema-card__files a {
+    background: #334155;
+    color: #e2e8f0;
+  }
+  .schema-card__files a:hover {
+    background: #e2e8f0;
+  }
+  .dark .schema-card__files a:hover {
+    background: #475569;
+  }
+
   /* ── Animation ── */
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(8px); }

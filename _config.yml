@@ -76,17 +76,15 @@ footer_links:
 
 exclude:
   - Gemfile
-  - Gemfile.lutaml
   - Gemfile.lock
   - Makefile
   - README.adoc
   - CLAUDE.md
   - deploy.sh
   - generate_configs.rb
-  - lxr_packages.yml
-  - json_packages.yml
   - node_modules
   - vendor/
+  - schemas/vendor/
   - build/
   - configs/
   - .sass-cache/
@@ -105,4 +103,4 @@ include:
 plugins:
   - jekyll-feed
   - jekyll-redirect-from
-  - jekyll-vite
+

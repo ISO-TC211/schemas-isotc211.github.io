@@ -37,7 +37,10 @@ jobs:
           bundler-cache: true
 
       - name: Setup Ruby (lutaml)
-        run: BUNDLE_GEMFILE=Gemfile.lutaml bundle install
+        run: BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle install
+
+      - name: Verify site bundle
+        run: bundle install --jobs 4
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -48,8 +51,11 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Build all
-        run: make all
+      - name: Build LXR packages
+        run: make configs lxr-spas
+
+      - name: Build Jekyll site
+        run: JEKYLL_ENV=production bundle exec jekyll build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
