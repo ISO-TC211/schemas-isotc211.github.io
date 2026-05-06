@@ -14,6 +14,7 @@ module SchemaSite
       return unless File.exist?(index_path)
 
       packages = JSON.parse(File.read(index_path)).map { |a| Package.new(a) }
+      resources = load_resources(site.source)
       base_url = site.config["url"] || "https://schemas.isotc211.org"
 
       groups = packages.group_by { |p| [p.standard, p.part] }
@@ -21,12 +22,14 @@ module SchemaSite
       hub_count = 0
 
       groups.each do |(standard, part), pkgs|
-        site.pages << StandardPage.new(site, standard, part, pkgs, multi_part: multi_part_standards.include?(standard))
+        std_resources = resources[standard] || {}
+        site.pages << StandardPage.new(site, standard, part, pkgs, std_resources, multi_part: multi_part_standards.include?(standard))
       end
 
       multi_part = packages.group_by(&:standard).select { |_, pkgs| pkgs.map(&:part).uniq.size > 1 }
       multi_part.each do |standard, pkgs|
-        site.pages << StandardRootPage.new(site, standard, pkgs)
+        std_resources = resources[standard] || {}
+        site.pages << StandardRootPage.new(site, standard, pkgs, std_resources)
       end
 
       hub_paths = Set.new
@@ -41,10 +44,27 @@ module SchemaSite
 
       puts "SchemaSite: #{groups.size} standard pages + #{hub_count} hub pages"
     end
+
+    private
+
+    def load_resources(source)
+      path = File.join(source, "resources_index.json")
+      return {} unless File.exist?(path)
+      JSON.parse(File.read(path)).fetch("standards", {})
+    end
   end
 
+  RESOURCE_LABELS = {
+    "transforms" => { label: "XSLT Transforms", icon: "⚡" },
+    "schematron" => { label: "Schematron Rules", icon: "✓" },
+    "examples_xml" => { label: "XML Examples", icon: "📄" },
+    "examples_json" => { label: "JSON Examples", icon: "📄" },
+    "codelists" => { label: "Codelist Dictionaries", icon: "📋" },
+    "bundles" => { label: "Download Packages", icon: "📦" },
+  }.freeze
+
   class StandardPage < Jekyll::PageWithoutAFile
-    def initialize(site, standard, part, packages, multi_part: false)
+    def initialize(site, standard, part, packages, resources, multi_part: false)
       @site = site
       @base = site.source
       @dir = if part == "-" && multi_part
@@ -61,7 +81,7 @@ module SchemaSite
         "layout" => "default",
         "title" => title_for(standard, part),
       }
-      self.content = "{% raw %}\n#{build_content(standard, part, packages)}\n{% endraw %}"
+      self.content = "{% raw %}\n#{build_content(standard, part, packages, resources)}\n{% endraw %}"
     end
 
     private
@@ -70,10 +90,11 @@ module SchemaSite
       part == "-" ? "ISO #{standard}" : "ISO #{standard} Part #{part.delete('-')}"
     end
 
-    def build_content(standard, part, packages)
+    def build_content(standard, part, packages, resources)
       title = title_for(standard, part)
       sorted = packages.sort_by { |p| status_order(p.status) }
       cards = sorted.map { |pkg| render_card(pkg) }.join("\n")
+      resources_section = render_resources(standard, part, resources)
 
       <<~HTML
         <section class="page-section">
@@ -82,6 +103,7 @@ module SchemaSite
             <div class="schema-cards">
               #{cards}
             </div>
+            #{resources_section}
           </div>
         </section>
       HTML
@@ -110,7 +132,7 @@ module SchemaSite
           <div class="schema-card__version">Version <code>#{esc(pkg.version)}</code></div>
           <div class="schema-card__actions">
             #{(pkg.has_spa? && browse_path) ? browse_link(browse_path) : ""}
-            #{files.any? ? download_link(files.first, file_ext) : ""}
+            #{files.any? ? file_links(files, file_ext) : ""}
           </div>
         </div>
       HTML
@@ -125,12 +147,64 @@ module SchemaSite
       HTML
     end
 
-    def download_link(path, ext)
-      <<~HTML.chomp
-        <a href="/#{esc(path)}" class="schema-card__download" onclick="event.stopPropagation()" title="Download #{ext}">
-          <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-          #{ext}
-        </a>
+    def file_links(files, ext)
+      if files.size == 1
+        <<~HTML.chomp
+          <a href="/#{esc(files.first.sub(%r{^schemas/}, ""))}" class="schema-card__download" onclick="event.stopPropagation()" title="Download #{ext}">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            #{ext}
+          </a>
+        HTML
+      else
+        items = files.map do |f|
+          name = File.basename(f)
+          <<~HTML.chomp
+            <a href="/#{esc(f.sub(%r{^schemas/}, ""))}" onclick="event.stopPropagation()">#{esc(name)}</a>
+          HTML
+        end.join("\n")
+        <<~HTML
+          <div class="schema-card__files" onclick="event.stopPropagation()">
+            <span class="schema-card__files-label">#{ext} files:</span>
+            #{items}
+          </div>
+        HTML
+      end
+    end
+
+    def render_resources(standard, part, resources)
+      return "" if resources.nil? || resources.empty?
+
+      sections = []
+      RESOURCE_LABELS.each do |category, config|
+        files = resources[category]
+        next if files.nil? || files.empty?
+
+        items = files.map do |f|
+          <<~HTML.chomp
+            <li>
+              <a href="/schemas/#{esc(f['path'])}">#{esc(f['name'])}</a>
+              #{f['description'] && f['description'] != f['name'] ? "<span class=\"resource-desc\">#{esc(f['description'])}</span>" : ""}
+            </li>
+          HTML
+        end.join("\n")
+
+        sections << <<~HTML
+          <div class="resource-group">
+            <h3 class="resource-group__title">#{config[:icon]} #{config[:label]}</h3>
+            <ul class="resource-group__list">
+              #{items}
+            </ul>
+          </div>
+        HTML
+      end
+
+      return "" if sections.empty?
+
+      <<~HTML
+        <div class="resources-section">
+          <h2 class="resources-section__title">Resources</h2>
+          #{sections.join("\n")}
+        </div>
       HTML
     end
 
@@ -148,7 +222,7 @@ module SchemaSite
   end
 
   class StandardRootPage < Jekyll::PageWithoutAFile
-    def initialize(site, standard, all_packages)
+    def initialize(site, standard, all_packages, resources)
       @site = site
       @base = site.source
       @dir = standard.to_s
@@ -159,12 +233,12 @@ module SchemaSite
         "layout" => "default",
         "title" => "ISO #{standard}",
       }
-      self.content = "{% raw %}\n#{build_content(standard, all_packages)}\n{% endraw %}"
+      self.content = "{% raw %}\n#{build_content(standard, all_packages, resources)}\n{% endraw %}"
     end
 
     private
 
-    def build_content(standard, all_packages)
+    def build_content(standard, all_packages, resources)
       parts = all_packages.group_by(&:part).sort_by { |part, _| part == "-" ? "0" : part }
 
       cards = parts.map do |part, pkgs|
@@ -186,6 +260,8 @@ module SchemaSite
         HTML
       end.join("\n")
 
+      resources_section = render_resources(standard, resources)
+
       <<~HTML
         <section class="page-section">
           <div class="page-section__inner">
@@ -194,8 +270,45 @@ module SchemaSite
             <div style="display:grid;gap:0.75rem;grid-template-columns:1fr;">
               #{cards}
             </div>
+            #{resources_section}
           </div>
         </section>
+      HTML
+    end
+
+    def render_resources(standard, resources)
+      return "" if resources.nil? || resources.empty?
+
+      sections = []
+      RESOURCE_LABELS.each do |category, config|
+        files = resources[category]
+        next if files.nil? || files.empty?
+
+        items = files.map do |f|
+          <<~HTML.chomp
+            <li>
+              <a href="/schemas/#{esc(f['path'])}">#{esc(f['name'])}</a>
+            </li>
+          HTML
+        end.join("\n")
+
+        sections << <<~HTML
+          <div class="resource-group">
+            <h3 class="resource-group__title">#{config[:icon]} #{config[:label]}</h3>
+            <ul class="resource-group__list">
+              #{items}
+            </ul>
+          </div>
+        HTML
+      end
+
+      return "" if sections.empty?
+
+      <<~HTML
+        <div class="resources-section">
+          <h2 class="resources-section__title">Resources</h2>
+          #{sections.join("\n")}
+        </div>
       HTML
     end
 
