@@ -1,3 +1,4 @@
+import '../css/tailwind.css'
 import 'theme-css/header.css'
 import 'theme-css/footer.css'
 import 'theme-css/typography.css'
