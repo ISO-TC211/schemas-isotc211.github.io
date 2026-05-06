@@ -9,9 +9,17 @@ async function loadSchemas() {
   if (!container) return
 
   let schemas = []
+  let resourceMap = {}
   try {
-    const res = await fetch('/schemas_index.json')
-    schemas = await res.json()
+    const [schemaRes, resourceRes] = await Promise.all([
+      fetch('/schemas_index.json'),
+      fetch('/resources_index.json'),
+    ])
+    schemas = await schemaRes.json()
+    const resourceData = await resourceRes.json()
+    if (resourceData.standards) {
+      resourceMap = resourceData.standards
+    }
   } catch {
     container.innerHTML = emptyState('Could not load schema index. Run <code>make all</code> to build.')
     return
@@ -31,6 +39,8 @@ async function loadSchemas() {
 
       visibleCount++
 
+      const resInfo = buildResourceChips(data.standard, resourceMap[data.standard])
+
       html += `
         <a href="/${esc(data.url)}/" class="std-card animate-fade-in-up" style="animation-delay: ${visibleCount * 30}ms">
           <div class="std-card__number">ISO ${esc(data.label)}</div>
@@ -42,6 +52,7 @@ async function loadSchemas() {
               ${data.types.size > 0 ? Array.from(data.types).sort().map(t =>
                 t === 'json' ? '<span class="badge badge--json">JSON</span>' : '<span class="badge badge--current">XSD</span>'
               ).join(' ') : ''}
+              ${resInfo}
             </div>
           </div>
           <svg class="std-card__arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -63,6 +74,26 @@ async function loadSchemas() {
   }
 
   render()
+}
+
+function buildResourceChips(standard, resources) {
+  if (!resources) return ''
+  const chips = []
+  const labels = {
+    transforms: { label: 'XSLT', badge: 'badge--xslt' },
+    schematron: { label: 'Schematron', badge: 'badge--schematron' },
+    examples_xml: { label: 'XML Examples', badge: 'badge--examples' },
+    examples_json: { label: 'JSON Examples', badge: 'badge--examples' },
+    codelists: { label: 'Codelists', badge: 'badge--codelists' },
+    bundles: { label: 'Bundles', badge: 'badge--bundles' },
+  }
+  for (const [cat, files] of Object.entries(resources)) {
+    if (!files || files.length === 0) continue
+    const info = labels[cat]
+    if (!info) continue
+    chips.push(`<span class="badge ${info.badge}">${files.length} ${info.label}</span>`)
+  }
+  return chips.join('')
 }
 
 function groupByStandardPart(schemas) {
