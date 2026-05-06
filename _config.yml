@@ -76,7 +76,6 @@ footer_links:
 
 exclude:
   - Gemfile
-  - Gemfile.lutaml
   - Gemfile.lock
   - Makefile
   - README.adoc

@@ -36,9 +36,6 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
 
-      - name: Setup Ruby (lutaml)
-        run: BUNDLE_GEMFILE=Gemfile.lutaml bundle install
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:

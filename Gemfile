@@ -15,4 +15,9 @@ group :jekyll_plugins do
   gem "jekyll-redirect-from"
 end
 
+gem "lutaml-xsd", "~> 1.1"
+gem "lutaml-model", github: "lutaml/lutaml-model", branch: "main"
+gem "lutaml-jsonschema"
+gem "moxml"
+gem "canon"
 gem "webrick"
