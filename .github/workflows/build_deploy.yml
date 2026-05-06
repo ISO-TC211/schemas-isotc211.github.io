@@ -57,6 +57,9 @@ jobs:
       - name: Build Jekyll site
         run: JEKYLL_ENV=production bundle exec jekyll build
 
+      - name: Copy SPA files into site output
+        run: cp -r site/* _site/ 2>/dev/null || true
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

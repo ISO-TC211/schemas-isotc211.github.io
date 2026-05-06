@@ -18,7 +18,7 @@ lxr-spas: configs
 	$(MAKE) build-all
 
 build-all:
-	$(MAKE) -j4 $(LXR_FILES) $(SPA_OK)
+	$(MAKE) -j4 $(LXR_FILES) $(SPA_FILES)
 
 CONFIGS   := $(wildcard configs/*.yml)
 LXR_FILES := $(patsubst configs/%.yml,build/%.lxr,$(CONFIGS))
@@ -36,6 +36,7 @@ build/%.lxr: configs/%.yml
 # Build Jekyll site
 _site: lxr-spas
 	JEKYLL_ENV=production bundle exec jekyll build
+	cp -r site/* _site/ 2>/dev/null || true
 
 # Dev server
 serve:
