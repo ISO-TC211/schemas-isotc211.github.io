@@ -1,0 +1,78 @@
+---
+layout: home
+title: XML Schemas
+permalink: /
+---
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-section__inner">
+    <div class="hero-section__kicker">
+      <span class="dot"></span>
+      ISO/TC 211 Schemas
+    </div>
+    <h1 class="hero-section__title">XML Schema Repository</h1>
+    <p class="hero-section__desc">
+      The authoritative repository of XML schema representations for
+      <a href="https://committee.iso.org/home/tc211">ISO/TC&nbsp;211</a>
+      Geographic information/Geomatics standards.
+      Browse interactive documentation for each schema, or download the XSD files directly.
+    </p>
+    <div class="url-box">
+      <div class="url-box__item--dark url-box__item">
+        <p class="url-box__label">Schema location URL pattern</p>
+        <code>https://schemas.isotc211.org/<span class="dim">{Standard}</span>/<span class="dim">{Part}</span>/<span class="dim">{Prefix}</span>/<span class="dim">{Version}</span></code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Schema Cards Section -->
+<section class="schemas-section">
+  <div class="schemas-section__inner">
+    <div class="filter-bar">
+      <input id="schema-filter" type="text" class="filter-bar__input" placeholder="Filter schemas by name, standard, or version...">
+      <span id="schema-count" class="filter-bar__count"></span>
+    </div>
+    <div id="schema-groups"></div>
+  </div>
+</section>
+
+<!-- Resources Section -->
+<section class="resources-section">
+  <div class="resources-section__inner">
+    <h2 class="resources-section__title">Resources</h2>
+    <ul class="resources-list">
+      <li>
+        <a href="/schemas/">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+          Browse raw XSD files
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/ISO-TC211/XML">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+          ISO/TC 211 XML Maintenance Group (XMG)
+        </a>
+      </li>
+      <li>
+        <a href="https://committee.iso.org/home/tc211">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+          ISO/TC 211 Committee
+        </a>
+      </li>
+      <li>
+        <a href="https://www.isotc211.org/">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"/></svg>
+          ISO/TC 211 Resources
+        </a>
+      </li>
+      <li>
+        <a href="https://lutaml.github.io/lutaml-xsd/">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+          Powered by LutaML XSD
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>

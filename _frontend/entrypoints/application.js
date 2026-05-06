@@ -1,0 +1,5 @@
+import '../../../jekyll-theme-isotc211/_frontend/entrypoints/application.js'
+import '../../../jekyll-theme-isotc211/_frontend/css/home.css'
+import '../css/schemas.css'
+import '../js/schemas.js'
+import '../js/resources.js'

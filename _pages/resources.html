@@ -1,0 +1,38 @@
+---
+layout: page
+title: Resources
+permalink: /resources/
+redirect_from:
+  - /transforms/
+---
+
+<section class="page-section">
+  <div class="page-section__inner">
+    <h1 class="page-section__title">Resources</h1>
+    <p class="page-section__desc">
+      Supporting resources for ISO/TC 211 schemas: XSLT transforms, Schematron
+      validation rules, example instances, codelist dictionaries, and download
+      packages.
+    </p>
+
+    <div class="res-filter">
+      <div class="res-filter__bar">
+        <div class="res-filter__search">
+          <svg class="res-filter__search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+          <input type="text" id="resource-filter" class="res-filter__input"
+                 placeholder="Search resources..." autocomplete="off">
+        </div>
+        <div class="res-filter__actions">
+          <select id="resource-standard" class="res-filter__select">
+            <option value="">All standards</option>
+          </select>
+          <span id="resource-count" class="res-filter__count"></span>
+        </div>
+      </div>
+
+      <div class="res-chips" id="resource-type-chips"></div>
+    </div>
+
+    <div id="resource-groups"></div>
+  </div>
+</section>

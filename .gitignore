@@ -1,7 +1,11 @@
 .DS_Store
-build_source/*
-node_modules
 _site
+build
+configs
+site
+schemas_index.json
+resources_index.json
+node_modules
 *.scssc
 Gemfile.lock
-
+public/vite/
