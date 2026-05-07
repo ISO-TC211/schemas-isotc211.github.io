@@ -3,78 +3,96 @@ name: links
 on:
   push:
     branches:
-    - main
-    - staging
+      - main
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly Monday 06:00 UTC
+
+permissions:
+  contents: read
 
 jobs:
   link_checker:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
 
-    - name: Setup prerequisites
-      run: |
-        sudo apt-get install -y xsltproc
+      - name: Compute build cache key
+        id: cache-key
+        run: |
+          SCHEMAS_SHA=$(git submodule status schemas | awk '{print $1}')
+          echo "schemas_sha=${SCHEMAS_SHA}" >> "$GITHUB_OUTPUT"
 
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.3'
-        bundler-cache: true
-        cache-version: 0 # Increment this number if you need to re-download cached gems
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
 
-    - name: Setup node
-      uses: actions/setup-node@v4
-      with:
-        node-version: '16'
-        cache: 'npm'
+      - name: Setup Ruby (lutaml)
+        run: BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle install
 
-    - run: npm install
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-    - name: Update submodules
-      run: |
-        make update-init update-modules
+      - name: Install Node dependencies
+        run: npm ci
 
-    - uses: actions/cache@v4
-      id: cache-schema-docs
-      name: Cache schema documentation
-      with:
-        path: |
-          schemas/
-        key: ${{ runner.os }}-${{ hashFiles('schemas/**') }}
+      - name: Cache LXR/SPA build artifacts
+        uses: actions/cache@v4
+        id: lxr-cache
+        with:
+          path: |
+            build/
+            site/
+            configs/
+            schemas_index.json
+            resources_index.json
+          key: lxr-v1-${{ hashFiles('generate_configs.rb', 'schemas/lxr_packages.yml', 'schemas/ljr_packages.yml', 'schemas/Gemfile.lock', 'Makefile') }}-${{ steps.cache-key.outputs.schemas_sha }}
 
-    - name: Generate schema documentation
-      if: steps.cache-schema-docs.outputs.cache-hit != 'true'
-      run: make schemas/_site
+      - name: Build lutaml-jsonschema frontend
+        if: steps.lxr-cache.outputs.cache-hit != 'true'
+        run: |
+          GEM_DIR=$(BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle show lutaml-jsonschema)
+          cd "$GEM_DIR/frontend"
+          npm install
+          npm run build
 
-    - name: Setup Pages
-      id: pages
-      uses: actions/configure-pages@v5
+      - name: Build LXR packages and SPAs
+        if: steps.lxr-cache.outputs.cache-hit != 'true'
+        run: make configs lxr-spas
 
-    - name: Build with Jekyll
-      # Outputs to the './_site' directory by default
-      run: build_source/.done build_source/_data/schemas.yml bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
-      env:
-        JEKYLL_ENV: production
+      - name: Build Jekyll site
+        run: JEKYLL_ENV=production bundle exec jekyll build
 
-    - name: Restore lychee cache
-      uses: actions/cache@v4
-      with:
-        path: .lycheecache
-        key: cache-lychee-${{ github.sha }}
-        restore-keys: cache-lychee-
+      - name: Copy SPA files into site output
+        run: cp -r site/* _site/ 2>/dev/null || true
 
-    - name: Link Checker
-      uses: lycheeverse/lychee-action@v2
-      with:
-        args: --verbose --no-progress --base '_site' --cache --max-cache-age 1d --root-dir / '_site/**/*.html'
-        fail: true
+      - name: Restore lychee cache
+        uses: actions/cache@v4
+        with:
+          path: .lycheecache
+          key: cache-lychee-${{ github.sha }}
+          restore-keys: cache-lychee-
 
-      # - name: Create Issue From File
-      #   uses: peter-evans/create-issue-from-file@v2
-      #   with:
-      #     title: Link Checker Report
-      #     content-filepath: ./lychee/out.md
-      #     labels: report, automated issue
+      - name: Link Checker
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --verbose
+            --no-progress
+            --base '_site'
+            --cache
+            --max-cache-age 1d
+            --exclude 'https://committee\.iso\.org/'
+            --exclude 'https://www\.facebook\.com/'
+            --exclude 'https://twitter\.com/'
+            '_site/**/*.html'
+          fail: true
