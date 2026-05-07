@@ -221,6 +221,7 @@
 
   .std-card__body {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -253,6 +254,7 @@
 
   .std-card__types {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.375rem;
   }
 

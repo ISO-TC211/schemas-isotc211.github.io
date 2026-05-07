@@ -80,12 +80,12 @@ function buildResourceChips(standard, resources) {
   if (!resources) return ''
   const chips = []
   const labels = {
-    transforms: { label: 'XSLT', badge: 'badge--xslt' },
-    schematron: { label: 'Schematron', badge: 'badge--schematron' },
-    examples_xml: { label: 'XML Examples', badge: 'badge--examples' },
-    examples_json: { label: 'JSON Examples', badge: 'badge--examples' },
-    codelists: { label: 'Codelists', badge: 'badge--codelists' },
-    bundles: { label: 'Bundles', badge: 'badge--bundles' },
+    transforms: { label: 'XSL', badge: 'badge--xslt' },
+    schematron: { label: 'SCH', badge: 'badge--schematron' },
+    examples_xml: { label: 'XML', badge: 'badge--examples' },
+    examples_json: { label: 'JSON', badge: 'badge--examples' },
+    codelists: { label: 'CL', badge: 'badge--codelists' },
+    bundles: { label: 'ZIP', badge: 'badge--bundles' },
   }
   for (const [cat, files] of Object.entries(resources)) {
     if (!files || files.length === 0) continue
