@@ -1,10 +1,11 @@
-name: links
+name: ci
 
 on:
   push:
     branches:
       - main
   pull_request:
+  repository_dispatch:
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * 1'  # Weekly Monday 06:00 UTC
@@ -12,14 +13,22 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  link_checker:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: true
+
+      - name: Update schemas to latest
+        if: github.event_name == 'repository_dispatch'
+        run: git submodule update --remote schemas
 
       - name: Compute build cache key
         id: cache-key
@@ -74,6 +83,37 @@ jobs:
 
       - name: Copy SPA files into site output
         run: cp -r site/* _site/ 2>/dev/null || true
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site/
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  link_checker:
+    needs: build
+    if: github.event_name != 'repository_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download site artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: _site/
 
       - name: Restore lychee cache
         uses: actions/cache@v4
