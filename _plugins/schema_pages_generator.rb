@@ -170,7 +170,7 @@ module SchemaSite
     def file_links(files, ext)
       if files.size == 1
         <<~HTML.chomp
-          <a href="/#{esc(files.first.sub(%r{^schemas/}, ""))}" class="schema-card__download" onclick="event.stopPropagation()" title="Download #{ext}">
+          <a href="/#{esc(files.first)}" class="schema-card__download" onclick="event.stopPropagation()" title="Download #{ext}">
             <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
             #{ext}
           </a>
@@ -179,7 +179,7 @@ module SchemaSite
         items = files.map do |f|
           name = File.basename(f)
           <<~HTML.chomp
-            <a href="/#{esc(f.sub(%r{^schemas/}, ""))}" onclick="event.stopPropagation()">#{esc(name)}</a>
+            <a href="/#{esc(f)}" onclick="event.stopPropagation()">#{esc(name)}</a>
           HTML
         end.join("\n")
         <<~HTML
@@ -401,7 +401,7 @@ module SchemaSite
     def render_schema_locations(pkg, mv, base_url)
       xsd_files = pkg.xsd_paths
         .select { |p| p.include?("/#{mv.module_name}/") && p.end_with?("/#{mv.module_name}.xsd") }
-        .map { |p| { name: File.basename(p), path: p.sub(%r{^schemas/}, "") } }
+        .map { |p| { name: File.basename(p), path: p } }
       return "" if xsd_files.empty?
 
       items = xsd_files.map do |f|
