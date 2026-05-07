@@ -94,5 +94,6 @@ jobs:
             --exclude 'https://committee\.iso\.org/'
             --exclude 'https://www\.facebook\.com/'
             --exclude 'https://twitter\.com/'
+            --exclude 'http://iso\.sparxcloud\.com/'
             '_site/**/*.html'
           fail: true
