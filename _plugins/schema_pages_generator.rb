@@ -23,7 +23,8 @@ module SchemaSite
 
       groups.each do |(standard, part), pkgs|
         std_resources = resources[standard] || {}
-        site.pages << StandardPage.new(site, standard, part, pkgs, std_resources, multi_part: multi_part_standards.include?(standard))
+        filtered = filter_resources_for_part(std_resources, standard, part, pkgs)
+        site.pages << StandardPage.new(site, standard, part, pkgs, filtered, multi_part: multi_part_standards.include?(standard))
       end
 
       multi_part = packages.group_by(&:standard).select { |_, pkgs| pkgs.map(&:part).uniq.size > 1 }
@@ -51,6 +52,25 @@ module SchemaSite
       path = File.join(source, "resources_index.json")
       return {} unless File.exist?(path)
       JSON.parse(File.read(path)).fetch("standards", {})
+    end
+
+    def filter_resources_for_part(std_resources, standard, part, packages)
+      has_only_json = packages.all?(&:json?)
+
+      std_resources.each_with_object({}) do |(cat, files), result|
+        relevant = files.select do |f|
+          path = f["path"]
+          part_match = path.match(%r{\A(?:json/)?#{Regexp.escape(standard)}/(-\d+)/})
+          if part_match
+            part_match[1] == part
+          elsif has_only_json
+            %w[examples_json codelists bundles].include?(cat)
+          else
+            true
+          end
+        end
+        result[cat] = relevant unless relevant.empty?
+      end
     end
   end
 

@@ -273,8 +273,24 @@ module SchemaIndex
       packages.each_with_object({}) do |pkg, counts|
         std_resources = resources[pkg.standard] || {}
         total = {}
-        std_resources.each { |cat, files| total[cat] = files.size }
+        std_resources.each do |cat, files|
+          relevant = files.select { |f| resource_relevant?(f["path"], cat, pkg) }
+          total[cat] = relevant.size unless relevant.empty?
+        end
         counts[pkg.name] = total unless total.empty?
+      end
+    end
+
+    def resource_relevant?(path, category, pkg)
+      part_match = path.match(%r{\A(?:json/)?#{Regexp.escape(pkg.standard)}/(-\d+)/})
+      if part_match
+        return part_match[1] == pkg.part
+      end
+      case pkg.type
+      when "json"
+        %w[examples_json codelists bundles].include?(category)
+      else
+        true
       end
     end
 

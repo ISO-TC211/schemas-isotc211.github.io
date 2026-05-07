@@ -1,0 +1,248 @@
+---
+layout: page
+title: About
+permalink: /about/
+---
+
+<section class="page-section">
+  <div class="page-section__inner">
+    <h1 class="page-section__title">About schemas.isotc211.org</h1>
+    <p class="page-section__desc">
+      The authoritative host for ISO/TC 211 implementation schemas. This site
+      serves XML Schema (XSD) and JSON Schema files, provides interactive schema
+      browsers, and hosts supporting resources for implementers of geographic
+      information standards.
+    </p>
+
+    <div class="doc-section">
+      <h2 class="doc-section__title">Schema Dereferencing</h2>
+      <p class="doc-section__desc">
+        ISO/TC 211 XML schemas use <code>schemaLocation</code> attributes to
+        reference normative schema files. This site resolves those URLs at
+        <code>https://schemas.isotc211.org/…</code>, allowing XML validators,
+        IDEs, and other tools to automatically retrieve the correct schema
+        definitions. The same URLs serve both the raw XSD files (for machine
+        consumption) and human-readable schema browsers.
+      </p>
+    </div>
+
+    <div class="doc-section">
+      <h2 class="doc-section__title">URI Structure</h2>
+      <p class="doc-section__desc">
+        ISO/TC 211 has adopted a standardized URI framework for identifying
+        schemas, namespaces, ontologies, and other implementation resources
+        (ISO/TC 211 Resolution 858). The following patterns apply to all schemas
+        hosted on this site.
+      </p>
+
+      <h3 style="font-size:1rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--color-primary-700, #1d4ed8);">XML Namespace</h3>
+      <div class="url-box">
+        <div class="url-box__item--dark url-box__item">
+          <code>https://schemas.isotc211.org/<span class="dim">{Standard}</span>/<span class="dim">{-Part}</span>/<span class="dim">{Namespace}</span>/<span class="dim">{Edition}.{MajorRelease}</span></code>
+          <p class="url-box__hint">Example: <code>https://schemas.isotc211.org/19115/-1/mcc/2.2</code></p>
+        </div>
+      </div>
+
+      <h3 style="font-size:1rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--color-primary-700, #1d4ed8);">XML Schema Location</h3>
+      <div class="url-box">
+        <div class="url-box__item--dark url-box__item">
+          <code>https://schemas.isotc211.org/<span class="dim">{Standard}</span>/<span class="dim">{-Part}</span>/<span class="dim">{Namespace}</span>/<span class="dim">{Edition}.{Major}.{Minor}</span>/<span class="dim">{Namespace}</span>.xsd</code>
+          <p class="url-box__hint">Example: <code>https://schemas.isotc211.org/19115/-1/mcc/2.2.1/mcc.xsd</code></p>
+        </div>
+      </div>
+
+      <h3 style="font-size:1rem;font-weight:600;margin:1.5rem 0 0.75rem;color:var(--color-primary-700, #1d4ed8);">Path Elements</h3>
+      <table class="about-table">
+        <thead>
+          <tr><th>Element</th><th>Description</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>Standard</code></td><td>Main standard number (5 digits)</td><td><code>19115</code></td></tr>
+          <tr><td><code>-Part</code></td><td>Part number with dash prefix; <code>-</code> for no part</td><td><code>-1</code>, <code>-</code></td></tr>
+          <tr><td><code>Namespace</code></td><td>3-letter XML namespace / module name</td><td><code>cit</code>, <code>mdb</code></td></tr>
+          <tr><td><code>Edition</code></td><td>Official ISO edition number</td><td><code>2</code></td></tr>
+          <tr><td><code>Major</code></td><td>Major schema release (new namespace)</td><td><code>2</code></td></tr>
+          <tr><td><code>Minor</code></td><td>Minor schema revision (same namespace)</td><td><code>1</code></td></tr>
+        </tbody>
+      </table>
+
+      <p class="doc-section__desc" style="margin-top:1rem;">
+        The edition number is included in the namespace URI to ease version
+        upgrades. The major release number introduces a new namespace when
+        breaking changes occur. The minor revision number only appears in
+        <code>schemaLocation</code> for backward-compatible fixes.
+      </p>
+    </div>
+
+    <div class="doc-section">
+      <h2 class="doc-section__title">Serving Schemas</h2>
+      <p class="doc-section__desc">
+        This site serves both XML and JSON schemas for direct machine
+        consumption:
+      </p>
+      <ul class="resources-list">
+        <li>
+          <strong>XML Schemas (XSD)</strong> — served at their normative
+          <code>schemaLocation</code> URLs. Tools resolve these automatically
+          via <code>xsi:schemaLocation</code> or <code>&lt;import&gt;</code>
+          directives.
+        </li>
+        <li>
+          <strong>JSON Schemas</strong> — served under
+          <code>/schemas/json/{standard}/…</code>. Use the <code>$id</code>
+          URI for <code>$ref</code> resolution.
+        </li>
+        <li>
+          <strong>Interactive Browsers</strong> — each schema package has a
+          browsable SPA at <code>/{standard}/{part}/{module}/{version}/browse/</code>
+          showing elements, types, properties, and cross-references.
+        </li>
+        <li>
+          <strong>Namespace Hubs</strong> — each XML namespace resolves to a
+          hub page listing schema locations, package info, and browse links.
+        </li>
+      </ul>
+    </div>
+
+    <div class="doc-section">
+      <h2 class="doc-section__title">Implementation Tools</h2>
+      <p class="doc-section__desc">
+        The following tools and resources support working with ISO/TC 211 schemas:
+      </p>
+      <div class="doc-cards">
+        <a href="https://lutaml.github.io/lutaml-xsd/" class="doc-card">
+          <div class="doc-card__icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z"/></svg>
+          </div>
+          <h2 class="doc-card__title">LutaML XSD</h2>
+          <p class="doc-card__desc">
+            Parses XSD schemas and generates interactive SPA documentation
+            with element/type hierarchies, cross-references, and diagrams.
+          </p>
+        </a>
+
+        <a href="https://github.com/ISO-TC211/schemas" class="doc-card">
+          <div class="doc-card__icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+          </div>
+          <h2 class="doc-card__title">Schema Repository</h2>
+          <p class="doc-card__desc">
+            Git repository containing all XSD and JSON schema files, Schematron
+            rules, example instances, codelist dictionaries, and XSLT transforms.
+          </p>
+        </a>
+
+        <a href="https://github.com/ISO-TC211/XML" class="doc-card">
+          <div class="doc-card__icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+          </div>
+          <h2 class="doc-card__title">XML Maintenance Group</h2>
+          <p class="doc-card__desc">
+            The ISO/TC 211 XML Maintenance Group (XMG) manages schema
+            harmonization, versioning, and defect resolution.
+          </p>
+        </a>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <h2 class="doc-section__title">Validation Resources</h2>
+      <p class="doc-section__desc">
+        Each schema package includes validation and testing resources:
+      </p>
+      <ul class="resources-list">
+        <li>
+          <strong>Schematron Rules</strong> — ISO Schematron (.sch) files
+          provide constraint validation beyond what XSD can express. Available
+          alongside each schema module and as cross-cutting rules per standard.
+        </li>
+        <li>
+          <strong>Example Instances</strong> — valid and invalid XML/JSON
+          example files for testing implementations. Located in
+          <code>examples/</code> subdirectories within each schema version.
+        </li>
+        <li>
+          <strong>Codelist Dictionaries</strong> — XML codelist vocabulary
+          files for enumerated types used in metadata, quality, and other
+          domains.
+        </li>
+        <li>
+          <strong>XSLT Transforms</strong> — stylesheets for converting
+          between schema versions, generating HTML from codelists, and
+          reordering metadata records.
+        </li>
+      </ul>
+    </div>
+
+    <div class="doc-section">
+      <h2 class="doc-section__title">Related ISO/TC 211 Sites</h2>
+      <ul class="resources-list">
+        <li>
+          <a href="https://www.isotc211.org/">
+            ISO/TC 211 Resources — standards, presentations, and meeting records
+          </a>
+        </li>
+        <li>
+          <a href="https://standards.isotc211.org/">
+            Standards — normative statements, conformance classes, and profiles
+          </a>
+        </li>
+        <li>
+          <a href="https://registry.isotc211.org/">
+            Registries — geodetic registry and other official registers
+          </a>
+        </li>
+        <li>
+          <a href="https://def.isotc211.org/">
+            Ontologies — OWL/RDF definitions for geographic information concepts
+          </a>
+        </li>
+        <li>
+          <a href="https://isotc211.geolexica.org/">
+            Terminology — multilingual glossary of geographic information terms
+          </a>
+        </li>
+        <li>
+          <a href="https://committee.iso.org/home/tc211">
+            ISO Committee Site — official ISO/TC 211 committee page
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    margin-top: 0.75rem;
+  }
+  .about-table th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-primary-50, #eff6ff);
+    font-weight: 600;
+    color: var(--color-primary-700, #1d4ed8);
+    border-bottom: 2px solid var(--color-primary-200, #bfdbfe);
+  }
+  .about-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+  }
+  .about-table td:first-child {
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', 'Noto Sans Mono', Consolas, monospace;
+    font-size: 0.8125rem;
+  }
+  html.dark .about-table th {
+    background: rgba(30, 58, 138, 0.3);
+    color: #93c5fd;
+    border-bottom-color: rgba(59, 130, 246, 0.3);
+  }
+  html.dark .about-table td {
+    border-bottom-color: #334155;
+  }
+</style>
