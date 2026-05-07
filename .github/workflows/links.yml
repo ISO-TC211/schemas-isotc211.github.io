@@ -96,6 +96,7 @@ jobs:
             --exclude 'https://www\.facebook\.com/'
             --exclude 'https://twitter\.com/'
             --exclude 'http://iso\.sparxcloud\.com/'
+            --exclude '%23'
             --exclude-path '_site/schemas/'
             '_site/**/*.html'
           fail: true
