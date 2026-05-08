@@ -59,14 +59,12 @@ jobs:
         run: BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle install
 
       - name: Setup Node
-        if: steps.lxr-cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
       - name: Install Node dependencies
-        if: steps.lxr-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Build lutaml-jsonschema frontend
