@@ -13,6 +13,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Architecture: **1 standard+part+version → 1 LXR package → 1 SPA HTML file**, all listed on the index page.
 
+## Canonical URL Rule
+
+**All schemas are served at top-level URLs with NO `/schemas/` prefix.** This is non-negotiable because XML parsers, validators, and `schemaLocation` attributes depend on these URLs.
+
+| Resource | URL Pattern |
+|----------|-------------|
+| XSD file | `/{standard}/{part}/{module}/{version}/{module}.xsd` |
+| JSON schema | `/json/{standard}/{part}/{module}/{version}/{module}.json` |
+| Schema browser | `/{standard}/{part}/{module}/{version}/browse/` |
+| Namespace hub | `/{standard}/{part}/{module}/{version}/` |
+
+The `schemas/` directory is a git submodule (source files). The `BuildSourceGenerator` plugin registers files from `schemas/` as Jekyll static files, and Jekyll serves them at top-level paths (stripping the `schemas/` base dir). Never add `/schemas/` to any URL path.
+
+The `url_path()` helper in `models.rb` strips the `schemas/` prefix from paths stored in `schemas_index.json` (which reference the source directory).
+
 ## Two-Gemfile Architecture
 
 `lutaml-xsd` depends on `terminal-table` in a way incompatible with Jekyll ~> 4.3. They cannot share a single Gemfile:
@@ -47,8 +62,8 @@ make serve
 # Clean all build artifacts
 make clean
 
-# Initialize/update git submodules (schemas)
-make update-init update-modules
+# Update git submodules (schemas)
+make update
 ```
 
 ## Architecture
@@ -68,7 +83,7 @@ generate_configs.rb   → Reads manifests from schemas/ + auto-discovers resourc
 configs/              → Auto-generated per-package lutaml-xsd configs
 build/                → Intermediate LXR packages (.lxr ZIP files)
 site/                 → SPA HTML output from lutaml-xsd and lutaml-jsonschema
-_site/                → Final deployable output (Jekyll build + SPA files copied in)
+_site/                → Final deployable output (Jekyll build with SPA + schema data)
 
 _frontend/            → jekyll-vite frontend source
   entrypoints/application.js → imports theme + schemas.css + schemas.js + resources.js
@@ -78,14 +93,27 @@ _frontend/            → jekyll-vite frontend source
 config/vite.json      → jekyll-vite config (sourceCodeDir: _frontend)
 vite.config.ts        → Vite config with vite-plugin-ruby
 
+_plugins/
+  build_source_generator.rb  → Registers SPA pages from site/ and schema data files from
+                                schemas/ as Jekyll static files. Files from schemas/ are
+                                served at top-level paths (no /schemas/ prefix).
+  schema_pages_generator.rb  → Generates standard listing pages, standard root pages (for
+                                multi-part standards), and namespace hub pages. Uses
+                                HtmlHelper from models.rb for rendering.
+  redirect_generator.rb      → Post-write hook: copies data files to legacy paths, generates
+                                HTML meta-refresh redirects for directory paths.
+  schema_site/models.rb      → Shared constants (DATA_EXTENSIONS, SKIP_DIRS, RESOURCE_CATEGORIES),
+                                HtmlHelper module (esc, url_path, render_resources), Package
+                                and ModuleVersion classes.
+
 _pages/index.html     → Jekyll index page (layout: home, hero + schema cards)
 _pages/resources.html → Dynamic resource catalog (transforms, schematron, examples, etc.)
 _pages/news.html      → News listing page (layout: posts, uses theme's posts.html layout)
 _pages/docs.html      → Documentation links page
+_pages/about.html     → About page with URL structure documentation
 _posts/               → News articles (Jekyll posts, .md format, layout: post)
 _config.yml           → Jekyll config (theme, plugins, nav, excludes)
 _data/redirects.yml   → Old→new path mappings for moved files
-_plugins/redirect_generator.rb → Generates HTML redirect pages from redirects.yml
 
 Gemfile               → Site deps: Jekyll + jekyll-theme-isotc211 + jekyll-vite
 Makefile              → Build orchestration
@@ -111,14 +139,16 @@ The filesystem IS the database. `generate_configs.rb` contains a `ResourceScanne
 Manifests (`lxr_packages.yml`, `ljr_packages.yml`) provide only human metadata (title, description, status). Everything else is auto-discovered.
 
 Output files:
-- `schemas_index.json` — all packages with resource counts
-- `resources_index.json` — all resources grouped by standard → category
+- `schemas_index.json` — all packages with resource counts (paths have `schemas/` prefix for source reference)
+- `resources_index.json` — all resources grouped by standard → category (paths are already canonical)
 
 ## Redirect Strategy
 
 Two tiers for handling URL changes from directory restructuring:
 1. **jekyll-redirect-from** — page-level redirects (e.g., `/transforms/` → `/resources/`)
-2. **_plugins/redirect_generator.rb** — file-level redirects from `_data/redirects.yml`
+2. **`_plugins/redirect_generator.rb`** — file-level redirects from `_data/redirects.yml`:
+   - **Data files** (.xsd, .xml, etc.) — copies the actual target file to the old path (XML parsers can't follow HTML redirects)
+   - **HTML/directory paths** — generates HTML meta-refresh redirect page
 
 ## Schema Location Mappings
 
@@ -139,14 +169,14 @@ Defined in `generate_configs.rb`, auto-included in every lutaml-xsd config:
 
 ## Deployment
 
-GitHub Actions workflow (`.github/workflows/build_deploy.yml`) builds on push to `main` and deploys `_site/` to GitHub Pages. The schemas submodule (ISO-TC211/schemas) triggers a `repository_dispatch` event to rebuild the site on schema changes.
+GitHub Actions workflow (`.github/workflows/ci.yml`) builds on push to `main` and deploys `_site/` to GitHub Pages. The schemas submodule (ISO-TC211/schemas) triggers a `repository_dispatch` event to rebuild the site on schema changes.
 
-### SPA deployment flow
-1. `generate_configs.rb` produces per-package configs + `Makefile.spa` (with `SPA_FILES` list)
-2. `make build-all` builds LXR packages + SPA HTML files (in parallel with `-j4`)
-3. `lutaml-jsonschema` requires its frontend pre-built: `cd $(bundle show lutaml-jsonschema)/frontend && npm install && npm run build`
-4. SPA HTML files go to `site/` (excluded from Jekyll processing)
-5. After Jekyll build, `cp -r site/* _site/` copies SPA files into the deployable output
+### Build pipeline
+1. `make configs` — `generate_configs.rb` produces per-package configs + `Makefile.spa` (with `SPA_FILES` list)
+2. `make lxr-spas` — builds LXR packages + SPA HTML files in parallel (`-j4`). Also pre-builds the lutaml-jsonschema frontend.
+3. `jekyll build` — generates all pages. `BuildSourceGenerator` registers schema data files from `schemas/` at top-level paths and SPA pages from `site/`. `SchemaPagesGenerator` creates standard, hub, and root pages.
+4. Post-write hook — `redirect_generator.rb` copies data files to legacy paths and generates HTML redirects.
+5. Deploy — upload `_site/` to GitHub Pages.
 
 ## jekyll-vite note
 

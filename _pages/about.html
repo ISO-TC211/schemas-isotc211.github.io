@@ -78,19 +78,22 @@ permalink: /about/
       <h2 class="doc-section__title">Serving Schemas</h2>
       <p class="doc-section__desc">
         This site serves both XML and JSON schemas for direct machine
-        consumption:
+        consumption. All files are served at <strong>canonical top-level
+        URLs</strong> — there is no <code>/schemas/</code> prefix in any
+        URL path.
       </p>
       <ul class="resources-list">
         <li>
           <strong>XML Schemas (XSD)</strong> — served at their normative
-          <code>schemaLocation</code> URLs. Tools resolve these automatically
-          via <code>xsi:schemaLocation</code> or <code>&lt;import&gt;</code>
-          directives.
+          <code>schemaLocation</code> URLs:
+          <code>/{standard}/{part}/{module}/{version}/{module}.xsd</code>.
+          Tools resolve these automatically via <code>xsi:schemaLocation</code>
+          or <code>&lt;import&gt;</code> directives.
         </li>
         <li>
           <strong>JSON Schemas</strong> — served under
-          <code>/json/{standard}/…</code>. Use the <code>$id</code>
-          URI for <code>$ref</code> resolution.
+          <code>/json/{standard}/{part}/{module}/{version}/…</code>.
+          Use the <code>$id</code> URI for <code>$ref</code> resolution.
         </li>
         <li>
           <strong>Interactive Browsers</strong> — each schema package has a
@@ -99,9 +102,22 @@ permalink: /about/
         </li>
         <li>
           <strong>Namespace Hubs</strong> — each XML namespace resolves to a
-          hub page listing schema locations, package info, and browse links.
+          hub page at <code>/{standard}/{part}/{module}/{version}/</code>
+          listing schema locations, package info, and browse links.
+        </li>
+        <li>
+          <strong>Supporting resources</strong> — examples, transforms,
+          codelists, Schematron rules, and download bundles are served under
+          per-standard paths like <code>/{standard}/resources/…</code>.
         </li>
       </ul>
+      <p class="doc-section__desc" style="margin-top:0.75rem;">
+        Some schemas were previously available at different paths (e.g.,
+        without a part number, or with a <code>/schemas/</code> prefix).
+        These legacy paths are redirected to the canonical URLs above.
+        For XML data files, the actual file is served at the old path since
+        XML parsers cannot follow HTML redirects.
+      </p>
     </div>
 
     <div class="doc-section">

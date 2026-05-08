@@ -30,39 +30,71 @@ The underlying [schemas repository](https://github.com/ISO-TC211/schemas)
 has been restructured with consistent directory naming (`standard/-part/module/version/`),
 separated examples, consolidated per-standard resources, and proper ZIP bundles.
 
-## Schema namespace patterns
+## URL structure
 
-### XML Schema (XSD) namespaces
+All schemas are served at **canonical top-level URLs** with no `/schemas/` prefix.
+This is the URL pattern that XML parsers, validators, and `schemaLocation` attributes
+rely on.
 
-XML schemas use the following namespace URI pattern:
+### XML namespaces
 
 ```
 https://schemas.isotc211.org/{standard}/{part}/{module}/{major}.{minor}
 ```
 
-For example:
 * `https://schemas.isotc211.org/19115/-1/cit/1.3` — ISO 19115-1 Citation module
 * `https://schemas.isotc211.org/19136/-/gml/1.0` — ISO 19136 GML
 * `https://schemas.isotc211.org/19157/-2/mdq/1.0` — ISO 19157-2 Data Quality measures
 
-Schema files are located at:
+### XML Schema files (XSD)
 
 ```
-https://schemas.isotc211.org/schemas/{standard}/{part}/{module}/{version}/{module}.xsd
+https://schemas.isotc211.org/{standard}/{part}/{module}/{version}/{module}.xsd
 ```
 
-### JSON Schema namespaces
+* `https://schemas.isotc211.org/19115/-1/cit/1.3.0/cit.xsd`
+* `https://schemas.isotc211.org/19136/-/gml/1.0/gml.xsd`
+* `https://schemas.isotc211.org/19139/-/gco/1.0/gco.xsd`
 
-JSON schemas follow the same organizational pattern:
+### JSON Schema files
 
 ```
-https://schemas.isotc211.org/schemas/json/{standard}/{part}/{module}/{version}/{module}.json
+https://schemas.isotc211.org/json/{standard}/{part}/{module}/{version}/{module}.json
 ```
 
-For example:
-* `json/19115/-4/mdj/1.0.0/mdj.json` — ISO 19115-4 Metadata JSON
-* `json/19123/-2/cis/1.2/coverage-schema.json` — ISO 19123-2 Coverage JSON
-* `json/19157/-1/dqc/1.0.0/dqc.json` — ISO 19157-1 Data Quality JSON
+* `https://schemas.isotc211.org/json/19115/-4/mdj/1.0.0/mdj.json`
+* `https://schemas.isotc211.org/json/19123/-2/cis/1.2/coverage-schema.json`
+* `https://schemas.isotc211.org/json/19157/-1/dqc/1.0.0/dqc.json`
+
+### Interactive schema browsers
+
+```
+https://schemas.isotc211.org/{standard}/{part}/{module}/{version}/browse/
+```
+
+### Namespace hub pages
+
+```
+https://schemas.isotc211.org/{standard}/{part}/{module}/{version}/
+```
+
+### Supporting resources
+
+```
+/{standard}/{part}/{module}/{version}/examples/...     — XML examples
+/json/{standard}/{part}/{module}/{version}/examples/... — JSON examples
+/{standard}/resources/transforms/...                    — XSLT transforms
+/{standard}/resources/codelists/...                     — Codelist dictionaries
+/{standard}/resources/bundles/...                       — Download packages
+```
+
+### Legacy paths
+
+Some schemas were previously available at different paths (e.g., without
+the part number, or with a `/schemas/` prefix). These old paths are
+redirected to the canonical URLs above. XML data files are served as
+actual file copies at the old path (since XML parsers cannot follow
+HTML redirects).
 
 ## Supported standards
 
