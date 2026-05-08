@@ -90,9 +90,9 @@ https://schemas.isotc211.org/{standard}/{part}/{module}/{version}/
 
 ### Legacy paths
 
-Some schemas were previously available at different paths (e.g., without
-the part number, or with a `/schemas/` prefix). These old paths are
-redirected to the canonical URLs above. XML data files are served as
+Some schemas were previously available at paths without the part number
+(e.g., `/19155/gpi/1.0/` instead of `/19155/-/gpi/1.0/`). These old paths
+are redirected to the canonical URLs above. XML data files are served as
 actual file copies at the old path (since XML parsers cannot follow
 HTML redirects).
 

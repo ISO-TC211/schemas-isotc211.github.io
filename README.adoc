@@ -80,7 +80,8 @@ Version:: semantic version (e.g., `1.0`, `1.3.0`)
 
 === Legacy redirects
 
-Some schemas were previously available at non-canonical paths (missing part number, or with `/schemas/` prefix).
+Some schemas were previously available at paths without the part number
+(e.g., `/19155/gpi/1.0/` instead of `/19155/-/gpi/1.0/`).
 These are redirected to the canonical URLs above:
 
 * **Data files** (.xsd, .xml, etc.) — the actual file is copied to the old path (XML parsers can't follow HTML redirects)
