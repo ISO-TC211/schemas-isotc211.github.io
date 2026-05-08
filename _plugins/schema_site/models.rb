@@ -20,6 +20,10 @@ module SchemaSite
       str.to_s.gsub("&", "&amp;").gsub("<", "&lt;").gsub(">", "&gt;").gsub('"', "&quot;")
     end
 
+    def url_path(path)
+      path.to_s.sub(%r{\Aschemas/}, "")
+    end
+
     def render_resources(resources, detailed: true)
       return "" if resources.nil? || resources.empty?
 
@@ -31,7 +35,7 @@ module SchemaSite
         items = files.map do |f|
           desc = (detailed && f["description"] && f["description"] != f["name"]) ? %{<span class="res-item__desc">#{esc(f["description"])}</span>} : ""
           <<~HTML.chomp
-            <a href="/#{esc(f['path'])}" class="res-item">
+            <a href="/#{esc(url_path(f['path']))}" class="res-item">
               <span class="res-item__dot res-item__dot--#{config[:color]}"></span>
               <span class="res-item__name">#{esc(f['name'])}</span>
               #{desc}

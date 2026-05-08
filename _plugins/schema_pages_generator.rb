@@ -129,7 +129,7 @@ module SchemaSite
       files = is_json ? (pkg.file_paths || []) : (pkg.xsd_paths || [])
       browse_path = pkg.browse_path
       type_badge = is_json ? '<span class="badge badge--json">JSON</span>' : ""
-      onclick = (pkg.has_spa? && browse_path) ? %[ onclick="window.location='/#{esc(browse_path)}'"] : ""
+      onclick = (pkg.has_spa? && browse_path) ? %[ onclick="window.location='/#{esc(url_path(browse_path))}'"] : ""
 
       <<~HTML
         <div class="schema-card"#{onclick}>
@@ -143,8 +143,8 @@ module SchemaSite
           <p class="schema-card__desc">#{esc(pkg.description)}</p>
           <div class="schema-card__version">Version <code>#{esc(pkg.version)}</code></div>
           <div class="schema-card__actions">
-            #{(pkg.has_spa? && browse_path) ? browse_link(browse_path) : ""}
-            #{files.any? ? file_links(files, file_ext) : ""}
+            #{(pkg.has_spa? && browse_path) ? browse_link(url_path(browse_path)) : ""}
+            #{files.any? ? file_links(files.map { |f| url_path(f) }, file_ext) : ""}
           </div>
         </div>
       HTML
@@ -299,7 +299,7 @@ module SchemaSite
     def render_schema_locations(pkg, mv, base_url)
       xsd_files = pkg.xsd_paths
         .select { |p| p.include?("/#{mv.module_name}/") && p.end_with?("/#{mv.module_name}.xsd") }
-        .map { |p| { name: File.basename(p), path: p } }
+        .map { |p| { name: File.basename(p), path: url_path(p) } }
       return "" if xsd_files.empty?
 
       items = xsd_files.map do |f|
@@ -328,7 +328,7 @@ module SchemaSite
 
       <<~HTML
         <div class="hub-browse">
-          <a href="/#{esc(pkg.browse_path)}" class="schema-card__browse" style="font-size:1rem;">
+          <a href="/#{esc(url_path(pkg.browse_path))}" class="schema-card__browse" style="font-size:1rem;">
             Browse interactive schema →
           </a>
           <p class="doc-section__desc" style="margin-top:0.75rem;">
