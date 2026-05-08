@@ -81,9 +81,6 @@ jobs:
       - name: Build Jekyll site
         run: JEKYLL_ENV=production bundle exec jekyll build
 
-      - name: Copy SPA files into site output
-        run: cp -r site/* _site/ 2>/dev/null || true
-
       - name: Upload site artifact
         uses: actions/upload-artifact@v4
         with:
@@ -151,6 +148,5 @@ jobs:
             --exclude 'http://iso\.sparxcloud\.com/'
             --exclude 'https://lutaml\.github\.io/'
             --exclude '%23'
-            --exclude-path '_site/schemas/'
             '_site/**/*.html'
           fail: true

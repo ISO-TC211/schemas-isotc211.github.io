@@ -83,7 +83,7 @@ exclude:
   - generate_configs.rb
   - node_modules
   - vendor/
-  - schemas/vendor/
+  - schemas/
   - build/
   - configs/
   - .sass-cache/
@@ -95,7 +95,6 @@ exclude:
   - site/
 
 include:
-  - schemas
   - schemas_index.json
   - resources_index.json
 

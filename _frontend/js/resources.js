@@ -153,7 +153,7 @@ async function loadResources() {
             </div>
             <div class="res-list">
               ${filtered.map(f => `
-                <a href="/schemas/${esc(f.path)}" class="res-item">
+                <a href="/${esc(f.path)}" class="res-item">
                   <span class="res-item__dot res-item__dot--${meta.color}"></span>
                   <span class="res-item__name">${esc(f.name)}</span>
                   <span class="res-item__desc">${esc(f.description)}</span>
