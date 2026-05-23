@@ -9,17 +9,9 @@ async function loadSchemas() {
   if (!container) return
 
   let schemas = []
-  let resourceMap = {}
   try {
-    const [schemaRes, resourceRes] = await Promise.all([
-      fetch('/schemas_index.json'),
-      fetch('/resources_index.json'),
-    ])
+    const schemaRes = await fetch('/schemas_index.json')
     schemas = await schemaRes.json()
-    const resourceData = await resourceRes.json()
-    if (resourceData.standards) {
-      resourceMap = resourceData.standards
-    }
   } catch {
     container.innerHTML = emptyState('Could not load schema index. Run <code>make all</code> to build.')
     return
@@ -39,7 +31,7 @@ async function loadSchemas() {
 
       visibleCount++
 
-      const resInfo = buildResourceChips(data.standard, resourceMap[data.standard])
+      const resInfo = buildResourceChipsFromPackages(data.packages)
 
       html += `
         <a href="/${esc(data.url)}/" class="std-card animate-fade-in-up" style="animation-delay: ${visibleCount * 30}ms">
@@ -76,9 +68,16 @@ async function loadSchemas() {
   render()
 }
 
-function buildResourceChips(standard, resources) {
-  if (!resources) return ''
-  const chips = []
+function buildResourceChipsFromPackages(packages) {
+  const aggregated = {}
+  for (const pkg of packages) {
+    const counts = pkg.resource_counts || {}
+    for (const [cat, count] of Object.entries(counts)) {
+      aggregated[cat] = (aggregated[cat] || 0) + count
+    }
+  }
+  if (Object.keys(aggregated).length === 0) return ''
+
   const labels = {
     transforms: { label: 'XSL', badge: 'badge--xslt' },
     schematron: { label: 'SCH', badge: 'badge--schematron' },
@@ -87,11 +86,11 @@ function buildResourceChips(standard, resources) {
     codelists: { label: 'CL', badge: 'badge--codelists' },
     bundles: { label: 'ZIP', badge: 'badge--bundles' },
   }
-  for (const [cat, files] of Object.entries(resources)) {
-    if (!files || files.length === 0) continue
+  const chips = []
+  for (const [cat, count] of Object.entries(aggregated)) {
     const info = labels[cat]
-    if (!info) continue
-    chips.push(`<span class="badge ${info.badge}">${files.length} ${info.label}</span>`)
+    if (!info || count === 0) continue
+    chips.push(`<span class="badge ${info.badge}">${count} ${info.label}</span>`)
   }
   return chips.join('')
 }
