@@ -64,7 +64,7 @@ module SchemaSite
           if part_match
             part_match[1] == part
           elsif has_only_json
-            %w[examples_json codelists bundles].include?(cat)
+            cat == "examples_json"
           else
             true
           end
