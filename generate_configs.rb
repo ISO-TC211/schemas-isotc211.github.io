@@ -286,12 +286,15 @@ module SchemaIndex
       if part_match
         return part_match[1] == pkg.part
       end
-      case pkg.type
-      when "json"
-        %w[examples_json codelists bundles].include?(category)
-      else
-        true
+      # Resources under standard/resources/ (no part segment) belong to XSD packages only
+      if path.start_with?("#{pkg.standard}/resources/")
+        return pkg.type == "xsd"
       end
+      # JSON examples under json/ directory
+      if path.start_with?("json/#{pkg.standard}/")
+        return pkg.type == "json"
+      end
+      false
     end
 
     private
