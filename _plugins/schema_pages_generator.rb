@@ -62,7 +62,7 @@ module SchemaSite
           path = f["path"]
           part_match = path.match(%r{\A(?:json/)?#{Regexp.escape(standard)}/(-\d+)/})
           if part_match
-            part_match[1] == part
+            part_match[1] == part && (has_only_json ? cat == "examples_json" : true)
           elsif has_only_json
             cat == "examples_json"
           else

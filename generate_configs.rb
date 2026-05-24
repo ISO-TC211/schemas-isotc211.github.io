@@ -284,17 +284,14 @@ module SchemaIndex
     def resource_relevant?(path, category, pkg)
       part_match = path.match(%r{\A(?:json/)?#{Regexp.escape(pkg.standard)}/(-\d+)/})
       if part_match
-        return part_match[1] == pkg.part
+        return false unless part_match[1] == pkg.part
       end
-      # Resources under standard/resources/ (no part segment) belong to XSD packages only
-      if path.start_with?("#{pkg.standard}/resources/")
-        return pkg.type == "xsd"
-      end
-      # JSON examples under json/ directory
-      if path.start_with?("json/#{pkg.standard}/")
+      # JSON examples belong only to JSON packages
+      if category == "examples_json"
         return pkg.type == "json"
       end
-      false
+      # All other resource categories are XML-only
+      return pkg.type == "xsd"
     end
 
     private
