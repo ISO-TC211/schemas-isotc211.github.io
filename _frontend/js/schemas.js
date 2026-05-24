@@ -69,14 +69,16 @@ async function loadSchemas() {
 }
 
 function buildResourceChipsFromPackages(packages) {
-  const aggregated = {}
+  // Deduplicate: take the max count per category across packages
+  // instead of summing, since multiple packages may share the same resources
+  const deduped = {}
   for (const pkg of packages) {
     const counts = pkg.resource_counts || {}
     for (const [cat, count] of Object.entries(counts)) {
-      aggregated[cat] = (aggregated[cat] || 0) + count
+      deduped[cat] = Math.max(deduped[cat] || 0, count)
     }
   }
-  if (Object.keys(aggregated).length === 0) return ''
+  if (Object.keys(deduped).length === 0) return ''
 
   const labels = {
     transforms: { label: 'XSL', badge: 'badge--xslt' },
@@ -87,7 +89,7 @@ function buildResourceChipsFromPackages(packages) {
     bundles: { label: 'ZIP', badge: 'badge--bundles' },
   }
   const chips = []
-  for (const [cat, count] of Object.entries(aggregated)) {
+  for (const [cat, count] of Object.entries(deduped)) {
     const info = labels[cat]
     if (!info || count === 0) continue
     chips.push(`<span class="badge ${info.badge}">${count} ${info.label}</span>`)
