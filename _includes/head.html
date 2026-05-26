@@ -13,9 +13,13 @@
   <link rel="manifest" href="{{ '/assets/site.webmanifest' | relative_url }}" />
   <meta name="theme-color" content="#0061ad" />
 
+  <script>;(function(){try{var s=localStorage.getItem('iso-tc211-theme');if(s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')}catch(e){}})();</script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  {% vite_javascript_tag application %}
 
   <style>
     html{scroll-behavior:smooth!important}
