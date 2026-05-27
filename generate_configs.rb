@@ -349,7 +349,7 @@ module SchemaIndex
     def load_manifest(filename, klass)
       path = File.join(@schemas_dir, filename)
       unless File.exist?(path)
-        raise "Manifest #{filename} not found in schemas/ — it must be defined in the schemas submodule"
+        raise "Manifest #{filename} not found in schemas/ — it must be defined in the schemas directory"
       end
 
       manifest = YAML.load_file(path)

@@ -24,7 +24,7 @@ Architecture: **1 standard+part+version → 1 LXR package → 1 SPA HTML file**,
 | Schema browser | `/{standard}/{part}/{module}/{version}/browse/` |
 | Namespace hub | `/{standard}/{part}/{module}/{version}/` |
 
-The `schemas/` directory is a git submodule (source files). The `BuildSourceGenerator` plugin registers files from `schemas/` as Jekyll static files, and Jekyll serves them at top-level paths (stripping the `schemas/` base dir). Never add `/schemas/` to any URL path.
+The `schemas/` directory is cloned from ISO-TC211/schemas via CI (`actions/checkout`). The `BuildSourceGenerator` plugin registers files from `schemas/` as Jekyll static files, and Jekyll serves them at top-level paths (stripping the `schemas/` base dir). Never add `/schemas/` to any URL path.
 
 The `url_path()` helper in `models.rb` strips the `schemas/` prefix from paths stored in `schemas_index.json` (which reference the source directory).
 
@@ -32,7 +32,7 @@ The `url_path()` helper in `models.rb` strips the `schemas/` prefix from paths s
 
 `lutaml-xsd` depends on `terminal-table` in a way incompatible with Jekyll ~> 4.3. They cannot share a single Gemfile:
 - **`Gemfile`** (site repo) — Jekyll + jekyll-theme-isotc211 + jekyll-vite (for `bundle exec jekyll build/serve`)
-- **`schemas/Gemfile`** (submodule) — lutaml-xsd + lutaml-model + lutaml-jsonschema (for lutaml commands)
+- **`schemas/Gemfile`** (cloned repo) — lutaml-xsd + lutaml-model + lutaml-jsonschema (for lutaml commands)
 
 The lutaml bundle uses a separate install path (`vendor/bundle-lutaml`) to avoid corrupting the Jekyll bundle. The Makefile uses `BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml` for all lutaml commands.
 
@@ -62,14 +62,14 @@ make serve
 # Clean all build artifacts
 make clean
 
-# Update git submodules (schemas)
+# Update schemas (clone or pull latest)
 make update
 ```
 
 ## Architecture
 
 ```
-schemas/              → Git submodule (ISO-TC211/schemas), MECE directory structure:
+schemas/              → Cloned from ISO-TC211/schemas, MECE directory structure:
                         {standard}/{-part}/{module}/{version}/*.xsd
                         {standard}/resources/{transforms,codelists,schematron,bundles}/
                         json/{standard}/{-part}/{module}/{version}/*.json
@@ -119,7 +119,7 @@ Gemfile               → Site deps: Jekyll + jekyll-theme-isotc211 + jekyll-vit
 Makefile              → Build orchestration
 ```
 
-## Directory Naming Convention (schemas/ submodule)
+## Directory Naming Convention (schemas/ directory)
 
 All paths follow `standard/-part/module/version/`:
 - **Standard**: 5 digits (e.g., `19115`)
@@ -169,7 +169,7 @@ Defined in `generate_configs.rb`, auto-included in every lutaml-xsd config:
 
 ## Deployment
 
-GitHub Actions workflow (`.github/workflows/ci.yml`) builds on push to `main` and deploys `_site/` to GitHub Pages. The schemas submodule (ISO-TC211/schemas) triggers a `repository_dispatch` event to rebuild the site on schema changes.
+GitHub Actions workflow (`.github/workflows/ci.yml`) builds on push to `main` and deploys `_site/` to GitHub Pages. The schemas repo (ISO-TC211/schemas) triggers a `repository_dispatch` event to rebuild the site on schema changes.
 
 ### Build pipeline
 1. `make configs` — `generate_configs.rb` produces per-package configs + `Makefile.spa` (with `SPA_FILES` list)
