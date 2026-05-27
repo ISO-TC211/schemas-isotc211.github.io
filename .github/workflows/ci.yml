@@ -67,6 +67,18 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
+      - name: Build lutaml frontends
+        if: steps.lxr-cache.outputs.cache-hit != 'true'
+        run: |
+          for gem_name in lutaml-jsonschema lutaml-xsd; do
+            GEM_DIR=$(BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle show "$gem_name" 2>/dev/null) || continue
+            [ -d "$GEM_DIR/frontend" ] || continue
+            cd "$GEM_DIR/frontend"
+            npm install
+            npm run build
+            cd -
+          done
+
       - name: Build LXR packages and SPAs
         if: steps.lxr-cache.outputs.cache-hit != 'true'
         run: make configs lxr-spas
