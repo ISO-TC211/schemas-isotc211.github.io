@@ -87,6 +87,7 @@ module SchemaIndex
       "font_family" => "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
       "mono_font_family" => "'JetBrains Mono', 'Noto Sans Mono', Consolas, monospace",
     },
+    "subtitle" => "ISO/TC 211 Schemas",
   }.freeze
 
   RESOURCE_CATEGORIES = {
@@ -214,7 +215,7 @@ module SchemaIndex
         "links" => [
           { "name" => "Homepage", "url" => "https://schemas.isotc211.org" },
           { "name" => "Repository", "url" => "https://github.com/ISO-TC211/schemas-isotc211.github.io" },
-          { "name" => "ISO/TC 211", "url" => "https://isotc211.org" },
+          { "name" => "ISO/TC 211", "url" => "https://www.isotc211.org" },
         ],
       }
     end
@@ -432,7 +433,7 @@ module SchemaIndex
 
       json_rules = json_packages.map do |pkg|
         schema_files = pkg.files.map { |f| File.join(@schemas_dir, f) }.join(" \\\n    ")
-        "site/#{pkg.browse_path}index.html:\n\t@mkdir -p $(dir $@)\n\t$(LUTAML_BUNDLE) bundle exec lutaml-jsonschema spa \\\n    #{schema_files} \\\n    -o $(dir $@) --title \"#{pkg.title}\"\n"
+        "site/#{pkg.browse_path}index.html:\n\t@mkdir -p $(dir $@)\n\t$(LUTAML_BUNDLE) bundle exec lutaml-jsonschema spa \\\n    #{schema_files} \\\n    -o $(dir $@) --title \"#{pkg.title}\" \\\n    --logo \"#{ISO_LOGO_URL}\" --subtitle \"ISO/TC 211 Schemas\"\n"
       end.join("\n")
 
       all_spas = (xsd_packages + json_packages).map { |pkg| "site/#{pkg.browse_path}index.html" }.join(" \\\n  ")
