@@ -36,8 +36,6 @@ clean:
 	rm -rf build site _site configs schemas_index.json resources_index.json
 
 update:
-	git submodule update --init
-	git submodule foreach git checkout main
-	git submodule foreach git pull origin main
+	git -C schemas pull || git clone --depth 1 https://github.com/ISO-TC211/schemas.git schemas
 
 .PHONY: all configs lxr-spas clean serve update
