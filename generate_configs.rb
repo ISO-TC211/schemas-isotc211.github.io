@@ -54,11 +54,25 @@ module SchemaIndex
     { "prefix" => "xlink", "uri" => "http://www.w3.org/1999/xlink" },
   ].freeze
 
+  ISO_LOGO_URL = "https://www.isotc211.org/assets/iso-red.svg"
+
   APPEARANCE = {
     "logos" => {
+      "square" => {
+        "light" => { "url" => ISO_LOGO_URL },
+        "dark" => { "url" => ISO_LOGO_URL },
+      },
+      "long" => {
+        "light" => { "url" => ISO_LOGO_URL },
+        "dark" => { "url" => ISO_LOGO_URL },
+      },
+      "icon" => {
+        "light" => { "url" => ISO_LOGO_URL },
+        "dark" => { "url" => ISO_LOGO_URL },
+      },
       "lutaml_logo" => {
-        "light" => { "url" => "https://raw.githubusercontent.com/lutaml/branding/main/svg/lutaml-logo_logo-full-light.svg" },
-        "dark" => { "url" => "https://raw.githubusercontent.com/lutaml/branding/main/svg/lutaml-logo_logo-full-dark.svg" },
+        "light" => { "url" => ISO_LOGO_URL },
+        "dark" => { "url" => ISO_LOGO_URL },
       },
     },
     "colors" => {
@@ -200,7 +214,7 @@ module SchemaIndex
         "links" => [
           { "name" => "Homepage", "url" => "https://schemas.isotc211.org" },
           { "name" => "Repository", "url" => "https://github.com/ISO-TC211/schemas-isotc211.github.io" },
-          { "name" => "Get Started with LutaML XSD", "url" => "https://lutaml.github.io/lutaml-xsd/getting-started" },
+          { "name" => "ISO/TC 211", "url" => "https://isotc211.org" },
         ],
       }
     end

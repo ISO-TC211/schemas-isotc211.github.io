@@ -67,13 +67,59 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Build lutaml-jsonschema frontend
+      - name: Patch lutaml frontends with ISO branding
         if: steps.lxr-cache.outputs.cache-hit != 'true'
         run: |
-          GEM_DIR=$(BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle show lutaml-jsonschema)
-          cd "$GEM_DIR/frontend"
-          npm install
-          npm run build
+          ISO_LOGO="https://www.isotc211.org/assets/iso-red.svg"
+          LUTAML_LIGHT="https://raw.githubusercontent.com/lutaml/branding/refs/heads/main/svg/lutaml-logo_logo-icon-light.svg"
+          LUTAML_DARK="https://raw.githubusercontent.com/lutaml/branding/refs/heads/main/svg/lutaml-logo_logo-icon-dark.svg"
+          LUTAML_FOOTER_LIGHT="https://raw.githubusercontent.com/lutaml/branding/refs/heads/main/svg/lutaml-logo_logo-full-light.svg"
+          LUTAML_FOOTER_DARK="https://raw.githubusercontent.com/lutaml/branding/refs/heads/main/svg/lutaml-logo_logo-full-dark.svg"
+
+          for gem_name in lutaml-jsonschema lutaml-xsd; do
+            GEM_DIR=$(BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle show "$gem_name" 2>/dev/null) || continue
+            SIDEBAR="$GEM_DIR/frontend/src/components/AppSidebar.vue"
+            [ -f "$SIDEBAR" ] || continue
+
+            # Replace sidebar branding logo (both icon and fallback)
+            sed -i "s|${LUTAML_LIGHT}|${ISO_LOGO}|g" "$SIDEBAR"
+            sed -i "s|${LUTAML_DARK}|${ISO_LOGO}|g" "$SIDEBAR"
+            sed -i "s|${LUTAML_FOOTER_LIGHT}|${ISO_LOGO}|g" "$SIDEBAR"
+            sed -i "s|${LUTAML_FOOTER_DARK}|${ISO_LOGO}|g" "$SIDEBAR"
+
+            # Replace branding alt text
+            sed -i 's/alt="LutaML"/alt="ISO"/g' "$SIDEBAR"
+
+            # Replace subtitle text
+            sed -i 's/LutaML JSON Schema/ISO\/TC 211 Schemas/g' "$SIDEBAR"
+            sed -i 's/LXR Package/ISO\/TC 211 Schemas/g' "$SIDEBAR"
+
+            # Replace footer link
+            sed -i 's|href="https://www.lutaml.org"|href="https://isotc211.org"|g' "$SIDEBAR"
+            sed -i 's/title="LutaML"/title="ISO\/TC 211"/g' "$SIDEBAR"
+
+            # Replace "Generated with LutaML ..." text
+            sed -i 's|Generated on|Built on|g' "$SIDEBAR"
+            sed -i 's|with\s*$|with|g' "$SIDEBAR"
+            sed -i 's|<a href="https://github.com/lutaml/lutaml-jsonschema"|<a href="https://schemas.isotc211.org"|g' "$SIDEBAR"
+            sed -i 's|<a href="https://github.com/lutaml/lutaml-xsd"|<a href="https://schemas.isotc211.org"|g' "$SIDEBAR"
+            sed -i 's|>LutaML JSON Schema</a>|>ISO\/TC 211 Schema Browser</a>|g' "$SIDEBAR"
+            sed -i 's|>LutaML XSD</a>|>ISO\/TC 211 Schema Browser</a>|g' "$SIDEBAR"
+
+            echo "Patched $gem_name branding"
+          done
+
+      - name: Build lutaml frontends
+        if: steps.lxr-cache.outputs.cache-hit != 'true'
+        run: |
+          for gem_name in lutaml-jsonschema lutaml-xsd; do
+            GEM_DIR=$(BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle show "$gem_name" 2>/dev/null) || continue
+            [ -d "$GEM_DIR/frontend" ] || continue
+            cd "$GEM_DIR/frontend"
+            npm install
+            npm run build
+            cd -
+          done
 
       - name: Build LXR packages and SPAs
         if: steps.lxr-cache.outputs.cache-hit != 'true'
