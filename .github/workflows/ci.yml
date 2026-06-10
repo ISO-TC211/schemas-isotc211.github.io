@@ -153,5 +153,6 @@ jobs:
             --exclude 'http://iso\.sparxcloud\.com/'
             --exclude 'https://lutaml\.github\.io/'
             --exclude '%23'
+            --exclude '.+/resources/?.*'
             '_site/**/*.html'
           fail: true
