@@ -54,12 +54,12 @@ powered_by:
 nav:
   - title: About
     url: /about/
+  - title: Resources
+    url: /resources/
   - title: Codelists
     url: /resources/codelists/
   - title: News
     url: /news/
-  - title: ISO/TC 211 Resources
-    url: https://www.isotc211.org
 
 footer_links:
   - title: Main Site
