@@ -91,3 +91,7 @@
   to: /19155/resources/bundles/19155.zip
 - from: /19157/19157.zip
   to: /19157/resources/bundles/19157.zip
+
+# Codelist persistent URL — old path redirect
+- from: /Resources/codelists.xml
+  to: /resources/codelists/codelists.xml
