@@ -20,6 +20,7 @@ tagline: >-
   Implementation schemas for geographic information technology
 
 markdown: kramdown
+future: true
 
 collections:
   pages:
