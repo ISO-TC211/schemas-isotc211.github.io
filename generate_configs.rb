@@ -97,6 +97,8 @@ module SchemaIndex
     "examples_json"=> { glob: "**/examples/*.json",                label: "JSON Examples" },
     "codelists"    => { glob: "*/resources/codelists/**/*.xml",    label: "Codelist Dictionaries" },
     "bundles"      => { glob: "*/resources/bundles/**/*.zip",      label: "Download Packages" },
+
+    "general_codelists" => { glob: "resources/codelists/**/*.xml", label: "General Codelist Catalogues" },
   }.freeze
 
   # ── Package base class ──
@@ -269,18 +271,30 @@ module SchemaIndex
       end
     end
 
+    CROSS_CUTTING_CATEGORIES = %w[general_codelists].freeze
+
     def scan_by_standard(packages)
       standards = packages.map { |p| p.standard }.uniq.sort
       resources = scan
 
-      standards.each_with_object({}) do |std, result|
+      result = standards.each_with_object({}) do |std, acc|
         std_resources = {}
         resources.each do |category, files|
+          next if CROSS_CUTTING_CATEGORIES.include?(category)
           matching = files.select { |f| f["path"].start_with?("#{std}/") || f["path"].start_with?("json/#{std}/") }
           std_resources[category] = matching unless matching.empty?
         end
-        result[std] = std_resources unless std_resources.empty?
+        acc[std] = std_resources unless std_resources.empty?
       end
+
+      cross_cutting = {}
+      resources.each do |category, files|
+        next unless CROSS_CUTTING_CATEGORIES.include?(category)
+        cross_cutting[category] = files unless files.empty?
+      end
+      result["_shared"] = cross_cutting unless cross_cutting.empty?
+
+      result
     end
 
     def compute_resource_counts(packages)
@@ -297,6 +311,7 @@ module SchemaIndex
     end
 
     def resource_relevant?(path, category, pkg)
+      return false if CROSS_CUTTING_CATEGORIES.include?(category)
       part_match = path.match(%r{\A(?:json/)?#{Regexp.escape(pkg.standard)}/(-\d+)/})
       if part_match
         return false unless part_match[1] == pkg.part
