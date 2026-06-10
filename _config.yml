@@ -54,6 +54,8 @@ powered_by:
 nav:
   - title: About
     url: /about/
+  - title: Codelists
+    url: /resources/codelists/
   - title: News
     url: /news/
   - title: ISO/TC 211 Resources
