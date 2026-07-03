@@ -38,7 +38,7 @@ module SchemaSite
         pkg.module_versions.each do |mv|
           next if hub_paths.include?(mv.hub_path)
           hub_paths.add(mv.hub_path)
-          site.pages << HubPage.new(site, pkg, mv, base_url)
+          site.pages << HubPage.new(site, pkg, mv, base_url, multi_part: multi_part_standards.include?(pkg.standard))
           hub_count += 1
         end
       end
@@ -251,7 +251,7 @@ module SchemaSite
   class HubPage < Jekyll::PageWithoutAFile
     include HtmlHelper
 
-    def initialize(site, pkg, mv, base_url)
+    def initialize(site, pkg, mv, base_url, multi_part: false)
       @site = site
       @base = site.source
       @dir = mv.hub_path.sub(%r{^/}, "").chomp("/")
@@ -262,12 +262,17 @@ module SchemaSite
         "layout" => "default",
         "title" => "#{mv.module_name} namespace",
       }
-      self.content = "{% raw %}\n#{build_content(pkg, mv, base_url)}\n{% endraw %}"
+      self.content = "{% raw %}\n#{build_content(pkg, mv, base_url, multi_part: multi_part)}\n{% endraw %}"
     end
 
     private
 
-    def build_content(pkg, mv, base_url)
+    def build_content(pkg, mv, base_url, multi_part: false)
+      standard_url = if multi_part || mv.part == "-"
+                       "/#{esc(mv.standard)}/"
+                     else
+                       "/#{esc(mv.standard)}/#{esc(mv.part)}/"
+                     end
       <<~HTML
         <section class="page-section">
           <div class="page-section__inner">
@@ -277,7 +282,7 @@ module SchemaSite
             </div>
             <dl class="hub-details">
               <dt>Standard</dt>
-              <dd><a href="/#{esc(mv.standard)}/">ISO #{esc(mv.standard)}</a></dd>
+              <dd><a href="#{standard_url}">ISO #{esc(mv.standard)}</a></dd>
               <dt>Part</dt>
               <dd>#{esc(mv.part_label)}</dd>
               <dt>Module</dt>
