@@ -148,6 +148,7 @@ jobs:
             --cache
             --max-cache-age 1d
             --exclude 'https://committee\.iso\.org/'
+            --exclude 'https://www\.iso\.org/'
             --exclude 'https://www\.facebook\.com/'
             --exclude 'https://twitter\.com/'
             --exclude 'http://iso\.sparxcloud\.com/'
