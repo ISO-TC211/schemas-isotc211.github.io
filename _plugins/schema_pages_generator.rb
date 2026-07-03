@@ -297,27 +297,51 @@ module SchemaSite
     end
 
     def render_schema_locations(pkg, mv, base_url)
-      xsd_files = pkg.xsd_paths
-        .select { |p| p.include?("/#{mv.module_name}/") && p.end_with?("/#{mv.module_name}.xsd") }
-        .map { |p| { name: File.basename(p), path: url_path(p) } }
-      return "" if xsd_files.empty?
+      if mv.json?
+        json_files = pkg.file_paths
+          .select { |p| p.end_with?(".json") }
+          .map { |p| { name: File.basename(p), path: url_path(p) } }
+        return "" if json_files.empty?
 
-      items = xsd_files.map do |f|
-        <<~HTML.chomp
-          <li>
-            <a href="/#{esc(f[:path])}">#{esc(f[:name])}</a>
-            <span class="hub-xsd-url">#{esc(base_url)}/#{esc(f[:path])}</span>
-          </li>
+        items = json_files.map do |f|
+          <<~HTML.chomp
+            <li>
+              <a href="/#{esc(f[:path])}">#{esc(f[:name])}</a>
+              <span class="hub-xsd-url">#{esc(base_url)}/#{esc(f[:path])}</span>
+            </li>
+          HTML
+        end.join("\n")
+
+        <<~HTML
+          <h2 class="doc-section__title">Schema locations</h2>
+          <p class="doc-section__desc">The normative JSON schema files for this namespace:</p>
+          <ul class="hub-xsd-list">
+            #{items}
+          </ul>
         HTML
-      end.join("\n")
+      else
+        xsd_files = pkg.xsd_paths
+          .select { |p| p.include?("/#{mv.module_name}/") && p.end_with?("/#{mv.module_name}.xsd") }
+          .map { |p| { name: File.basename(p), path: url_path(p) } }
+        return "" if xsd_files.empty?
 
-      <<~HTML
-        <h2 class="doc-section__title">Schema locations</h2>
-        <p class="doc-section__desc">The normative XML schema files for this namespace:</p>
-        <ul class="hub-xsd-list">
-          #{items}
-        </ul>
-      HTML
+        items = xsd_files.map do |f|
+          <<~HTML.chomp
+            <li>
+              <a href="/#{esc(f[:path])}">#{esc(f[:name])}</a>
+              <span class="hub-xsd-url">#{esc(base_url)}/#{esc(f[:path])}</span>
+            </li>
+          HTML
+        end.join("\n")
+
+        <<~HTML
+          <h2 class="doc-section__title">Schema locations</h2>
+          <p class="doc-section__desc">The normative XML schema files for this namespace:</p>
+          <ul class="hub-xsd-list">
+            #{items}
+          </ul>
+        HTML
+      end
     end
 
     def render_browse_section(pkg, mv)

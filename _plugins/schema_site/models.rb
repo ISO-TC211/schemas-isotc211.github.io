@@ -72,21 +72,34 @@ module SchemaSite
   end
 
   class ModuleVersion
-    attr_reader :standard, :part, :module_name, :version
+    attr_reader :standard, :part, :module_name, :version, :json
 
-    def initialize(standard:, part:, module_name:, version:)
+    def initialize(standard:, part:, module_name:, version:, json: false)
       @standard = standard
       @part = part
       @module_name = module_name
       @version = version
+      @json = json
+    end
+
+    def json?
+      @json
     end
 
     def hub_path
-      "/#{standard}/#{part}/#{module_name}/#{version}/"
+      if json?
+        "/json/#{standard}/#{part}/#{module_name}/#{version}/"
+      else
+        "/#{standard}/#{part}/#{module_name}/#{version}/"
+      end
     end
 
     def browse_path
-      "/#{standard}/#{part}/#{module_name}/#{version}/browse/"
+      if json?
+        "/#{standard}/#{part}/#{module_name}/#{version}/json/browse/"
+      else
+        "/#{standard}/#{part}/#{module_name}/#{version}/browse/"
+      end
     end
 
     def part_label
@@ -99,18 +112,32 @@ module SchemaSite
     end
 
     def namespace_uri
-      "https://schemas.isotc211.org/#{standard}/#{part}/#{module_name}/#{ns_version}"
+      if json?
+        "https://schemas.isotc211.org/json/#{standard}/#{part}/#{module_name}/#{ns_version}"
+      else
+        "https://schemas.isotc211.org/#{standard}/#{part}/#{module_name}/#{ns_version}"
+      end
     end
 
     def self.extract_from_path(path, standard: nil)
       stripped = path.sub(%r{^schemas/}, "")
-      return nil unless stripped =~ %r{^(\d{5})/([^/]+)/([^/]+)/([^/]+)/.+\.xsd$}
-      new(
-        standard: standard || $1,
-        part: $2,
-        module_name: $3,
-        version: $4,
-      )
+
+      if stripped =~ %r{^json/(\d{5})/([^/]+)/([^/]+)/([^/]+)/.+\.json$}
+        new(
+          standard: standard || $1,
+          part: $2,
+          module_name: $3,
+          version: $4,
+          json: true,
+        )
+      elsif stripped =~ %r{^(\d{5})/([^/]+)/([^/]+)/([^/]+)/.+\.xsd$}
+        new(
+          standard: standard || $1,
+          part: $2,
+          module_name: $3,
+          version: $4,
+        )
+      end
     end
   end
 
