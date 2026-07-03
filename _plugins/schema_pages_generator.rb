@@ -268,11 +268,11 @@ module SchemaSite
     private
 
     def build_content(pkg, mv, base_url, multi_part: false)
-      standard_url = if multi_part || mv.part == "-"
-                       "/#{esc(mv.standard)}/"
-                     else
-                       "/#{esc(mv.standard)}/#{esc(mv.part)}/"
-                     end
+      standard_url, standard_label = if multi_part || mv.part == "-"
+                                       ["/#{esc(mv.standard)}/", "ISO #{esc(mv.standard)}"]
+                                     else
+                                       ["/#{esc(mv.standard)}/#{esc(mv.part)}/", "ISO #{esc(mv.standard)}#{esc(mv.part)}"]
+                                     end
       <<~HTML
         <section class="page-section">
           <div class="page-section__inner">
@@ -282,7 +282,7 @@ module SchemaSite
             </div>
             <dl class="hub-details">
               <dt>Standard</dt>
-              <dd><a href="#{standard_url}">ISO #{esc(mv.standard)}</a></dd>
+              <dd><a href="#{standard_url}">#{standard_label}</a></dd>
               <dt>Part</dt>
               <dd>#{esc(mv.part_label)}</dd>
               <dt>Module</dt>
