@@ -36,6 +36,8 @@ module SchemaSite
       schemas_base = File.join(source, "schemas")
       return unless Dir.exist?(schemas_base)
 
+      schemas_base = File.realpath(schemas_base)
+
       Find.find(schemas_base) do |path|
         if File.directory?(path)
           Find.prune if SKIP_DIRS.include?(File.basename(path))
