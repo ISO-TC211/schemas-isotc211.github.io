@@ -7,6 +7,12 @@ on:
   pull_request:
   repository_dispatch:
   workflow_dispatch:
+    inputs:
+      force-lutaml-build:
+        description: 'Force run Setup Ruby (lutaml) and Build lutaml frontends steps, ignoring cache-hit'
+        required: false
+        default: 'false'
+        type: string
   schedule:
     - cron: '0 6 * * 1'  # Weekly Monday 06:00 UTC
 
@@ -36,6 +42,11 @@ jobs:
           SCHEMAS_SHA=$(git -C schemas rev-parse HEAD)
           echo "schemas_sha=${SCHEMAS_SHA}" >> "$GITHUB_OUTPUT"
 
+      - name: Determine if lutaml steps should run
+        id: should-run-lutaml
+        run: |
+          echo "value=${{ github.event.inputs.force-lutaml-build }}" >> "$GITHUB_OUTPUT"
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -52,10 +63,14 @@ jobs:
             configs/
             schemas_index.json
             resources_index.json
+            vendor/bundle-lutaml
           key: lxr-v1-${{ hashFiles('generate_configs.rb', 'schemas/lxr_packages.yml', 'schemas/ljr_packages.yml', 'schemas/Gemfile.lock', 'Makefile') }}-${{ steps.cache-key.outputs.schemas_sha }}
+          restore-keys: |
+            lxr-v1-${{ hashFiles('generate_configs.rb', 'schemas/lxr_packages.yml', 'schemas/ljr_packages.yml', 'schemas/Gemfile.lock', 'Makefile') }}-
+            lxr-v1-
 
       - name: Setup Ruby (lutaml)
-        if: steps.lxr-cache.outputs.cache-hit != 'true'
+        if: steps.should-run-lutaml.outputs.value == 'true' || steps.lxr-cache.outputs.cache-hit != 'true'
         run: BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle install
 
       - name: Setup Node
@@ -68,7 +83,7 @@ jobs:
         run: npm ci
 
       - name: Build lutaml frontends
-        if: steps.lxr-cache.outputs.cache-hit != 'true'
+        if: steps.should-run-lutaml.outputs.value == 'true' || steps.lxr-cache.outputs.cache-hit != 'true'
         run: |
           for gem_name in lutaml-jsonschema lutaml-xsd; do
             GEM_DIR=$(BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle show "$gem_name" 2>/dev/null) || continue
@@ -80,7 +95,7 @@ jobs:
           done
 
       - name: Build LXR packages and SPAs
-        if: steps.lxr-cache.outputs.cache-hit != 'true'
+        if: steps.should-run-lutaml.outputs.value == 'true' || steps.lxr-cache.outputs.cache-hit != 'true'
         run: make configs lxr-spas
 
       - name: Build Jekyll site
