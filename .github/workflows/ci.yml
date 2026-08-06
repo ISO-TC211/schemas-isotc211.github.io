@@ -143,10 +143,11 @@ jobs:
           args: >-
             --verbose
             --no-progress
-            --base '${{ github.workspace }}/_site'
+            --base-url 'https://schemas.isotc211.org/'
             --root-dir '${{ github.workspace }}/_site'
             --cache
             --max-cache-age 1d
+            --exclude-link-local
             --exclude 'https://committee\.iso\.org/'
             --exclude 'https://www\.iso\.org/'
             --exclude 'https://www\.facebook\.com/'
