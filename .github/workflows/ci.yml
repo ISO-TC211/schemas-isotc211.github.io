@@ -28,10 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout site
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout schemas
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ISO-TC211/schemas
           path: schemas
@@ -54,7 +54,7 @@ jobs:
           bundler-cache: true
 
       - name: Cache LXR/SPA build artifacts
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: lxr-cache
         with:
           path: |
@@ -74,7 +74,7 @@ jobs:
         run: BUNDLE_GEMFILE=schemas/Gemfile BUNDLE_PATH=vendor/bundle-lutaml bundle install
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
           cache: 'npm'
@@ -146,7 +146,7 @@ jobs:
           path: _site/
 
       - name: Restore lychee cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .lycheecache
           key: cache-lychee-${{ github.sha }}
