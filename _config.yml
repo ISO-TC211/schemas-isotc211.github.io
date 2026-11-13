@@ -59,6 +59,8 @@ nav:
     url: /resources/
   - title: Codelists
     url: /resources/codelists/
+  - title: Docs
+    url: /docs/
   - title: News
     url: /news/
 
