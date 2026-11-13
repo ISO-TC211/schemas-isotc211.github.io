@@ -9,6 +9,11 @@ permalink: /docs/xml-catalogs/
 
 # XML Catalogs
 
+<p class="doc-credit">
+  Authored by Heidi Vanparys of KDS (DK), supported by Tobias Spears (CA),
+  Magnus Karge (NO), and Peter Parslow (GB).
+</p>
+
 An official XML schema repository, such as those maintained by ISO/TC 211 and
 OGC, offers users a single, reliable, and permanent source for normative XML
 schema documents. `xsi:schemaLocation` attributes in XML instance documents can
