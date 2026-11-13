@@ -135,7 +135,7 @@ jobs:
         uses: actions/deploy-pages@v5
 
   link_checker:
-    needs: build
+    needs: deploy
     if: github.event_name != 'repository_dispatch'
     runs-on: ubuntu-latest
     steps:
