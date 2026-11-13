@@ -12,11 +12,11 @@ permalink: /docs/xml-catalogs/
 <aside class="doc-authors">
   <p class="doc-authors__label">Authors</p>
   <p class="doc-authors__lead">
-    <a href="https://github.com/heidivanparys">Heidi Vanparys</a> — KDS (DK)
+    <a href="https://github.com/heidivanparys">Heidi Vanparys</a> (DK)
   </p>
   <p class="doc-authors__support">
     Supported by
-    <a href="https://github.com/BoltAlongTornado">Tobias Spears</a> (CA),
+    <a href="https://github.com/sptws001">Tobias Spears</a> (CA),
     <a href="https://github.com/magnusKarge">Magnus Karge</a> (NO), and
     <a href="https://github.com/PeterParslow">Peter Parslow</a> (GB)
   </p>
@@ -355,8 +355,8 @@ catalogs are provided below.
    <https://groups.oasis-open.org/higherlogic/ws/public/download/14810/xml-catalogs.pdf/latest>
 2. NASA. *Understanding XML Catalog Files*. Available from:
    <https://pds.nasa.gov/datastandards/training/documents/Understanding%20XML%20Catalog%20Files.pdf>
-3. WALSH, Norman. *XML Entity and URI Resolvers*. Version 1.5. 20 November
-   2006. Available from:
+3. WALSH, Norman. *XML Entity and URI Resolvers*. Version 1.5.
+   20 November 2006. Available from:
    <https://xerces.apache.org/xml-commons/components/resolver/resolver-article.html>
 4. COSTELLO, Roger L. *RE: Understanding XML catalogs: what they are, why they
    are used, and where they are used.* OASIS TC Archives. 26 July 2010.
