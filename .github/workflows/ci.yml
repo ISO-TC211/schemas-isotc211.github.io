@@ -135,7 +135,7 @@ jobs:
         uses: actions/deploy-pages@v5
 
   link_checker:
-    needs: deploy
+    needs: build
     if: github.event_name != 'repository_dispatch'
     runs-on: ubuntu-latest
     steps:
@@ -152,17 +152,32 @@ jobs:
           key: cache-lychee-${{ github.sha }}
           restore-keys: cache-lychee-
 
+      # Check the built artifact, not production: serve _site locally and
+      # rewrite same-site URLs to the local server so nothing probes the
+      # live deployment.
+      - name: Point same-site URLs at a local server
+        run: |
+          grep -rl 'https://schemas\.isotc211\.org' _site --include='*.html' |
+            xargs -r sed -i 's|https://schemas\.isotc211\.org|http://127.0.0.1:8080|g'
+
+      - name: Serve built site
+        run: |
+          python3 -m http.server 8080 --directory "$GITHUB_WORKSPACE/_site" >/dev/null 2>&1 &
+          echo $! > server.pid
+          for i in $(seq 1 30); do
+            curl -fsS -o /dev/null http://127.0.0.1:8080/ && break
+            sleep 1
+          done
+
       - name: Link Checker
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
             --verbose
             --no-progress
-            --base-url 'https://schemas.isotc211.org/'
-            --root-dir '${{ github.workspace }}/_site'
+            --base-url 'http://127.0.0.1:8080/'
             --cache
             --max-cache-age 1d
-            --exclude-link-local
             --exclude 'https://committee\.iso\.org/'
             --exclude 'https://www\.iso\.org/'
             --exclude 'https://www\.facebook\.com/'
@@ -173,3 +188,7 @@ jobs:
             --exclude '.+/resources/?.*'
             '_site/**/*.html'
           fail: true
+
+      - name: Stop local server
+        if: always()
+        run: kill "$(cat server.pid)" 2>/dev/null || true
