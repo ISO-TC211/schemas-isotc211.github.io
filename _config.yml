@@ -96,6 +96,7 @@ exclude:
   - xsdvi/
   - xsl/
   - site/
+  - migrate/
 
 include:
   - schemas_index.json
