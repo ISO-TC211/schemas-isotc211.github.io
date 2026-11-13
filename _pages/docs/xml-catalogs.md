@@ -9,10 +9,18 @@ permalink: /docs/xml-catalogs/
 
 # XML Catalogs
 
-<p class="doc-credit">
-  Authored by Heidi Vanparys of KDS (DK), supported by Tobias Spears (CA),
-  Magnus Karge (NO), and Peter Parslow (GB).
-</p>
+<aside class="doc-authors">
+  <p class="doc-authors__label">Authors</p>
+  <p class="doc-authors__lead">
+    <a href="https://github.com/heidivanparys">Heidi Vanparys</a> — KDS (DK)
+  </p>
+  <p class="doc-authors__support">
+    Supported by
+    <a href="https://github.com/BoltAlongTornado">Tobias Spears</a> (CA),
+    <a href="https://github.com/magnusKarge">Magnus Karge</a> (NO), and
+    <a href="https://github.com/PeterParslow">Peter Parslow</a> (GB)
+  </p>
+</aside>
 
 An official XML schema repository, such as those maintained by ISO/TC 211 and
 OGC, offers users a single, reliable, and permanent source for normative XML

@@ -15,8 +15,11 @@ A new guide is now available in the
 [Docs section](/docs/xml-catalogs/):
 [**XML Catalogs**](/docs/xml-catalogs/).
 
-The guide was authored by Heidi Vanparys of KDS (DK), supported by
-Tobias Spears (CA), Magnus Karge (NO), and Peter Parslow (GB).
+The guide was authored by
+[Heidi Vanparys](https://github.com/heidivanparys) of KDS (DK), supported by
+[Tobias Spears](https://github.com/BoltAlongTornado) (CA),
+[Magnus Karge](https://github.com/magnusKarge) (NO), and
+[Peter Parslow](https://github.com/PeterParslow) (GB).
 
 ## What the guide covers
 

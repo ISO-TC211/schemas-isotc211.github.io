@@ -72,13 +72,45 @@
   }
   .dark .doc-content code { background: #0f172a; }
 
-  /* ── Doc authorship credit ── */
-  .doc-credit {
+  /* ── Doc authors panel ── */
+  .doc-authors {
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #0061ad;
+    border-radius: 0.5rem;
+    background: #f8fafc;
+    padding: 1rem 1.25rem;
+    margin: 0 0 1.75rem;
+  }
+  .doc-authors p { margin-bottom: 0; }
+
+  .doc-authors__label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #1d4ed8;
+    margin-bottom: 0.25rem;
+  }
+
+  .doc-authors__lead {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  .doc-authors__support {
     font-size: 0.875rem;
     color: #475569;
-    margin: -0.5rem 0 1.5rem;
+    margin-top: 0.25rem;
   }
-  .dark .doc-credit { color: #94a3b8; }
+
+  .dark .doc-authors {
+    border-color: #334155;
+    background: rgba(30, 58, 138, 0.15);
+  }
+  .dark .doc-authors__label { color: #93c5fd; }
+  .dark .doc-authors__lead { color: #f8fafc; }
+  .dark .doc-authors__support { color: #94a3b8; }
 
   /* ── Doc example captions ── */
   .doc-caption {
