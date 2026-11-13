@@ -72,6 +72,14 @@
   }
   .dark .doc-content code { background: #0f172a; }
 
+  /* ── Doc authorship credit ── */
+  .doc-credit {
+    font-size: 0.875rem;
+    color: #475569;
+    margin: -0.5rem 0 1.5rem;
+  }
+  .dark .doc-credit { color: #94a3b8; }
+
   /* ── Doc example captions ── */
   .doc-caption {
     font-size: 0.875rem;

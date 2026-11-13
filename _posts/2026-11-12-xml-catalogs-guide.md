@@ -15,6 +15,9 @@ A new guide is now available in the
 [Docs section](/docs/xml-catalogs/):
 [**XML Catalogs**](/docs/xml-catalogs/).
 
+The guide was authored by Heidi Vanparys of KDS (DK), supported by
+Tobias Spears (CA), Magnus Karge (NO), and Peter Parslow (GB).
+
 ## What the guide covers
 
 **Mapping namespace URIs.** Using the catalog `uri` element to point an XML
