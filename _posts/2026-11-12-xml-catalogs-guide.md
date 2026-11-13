@@ -16,8 +16,8 @@ A new guide is now available in the
 [**XML Catalogs**](/docs/xml-catalogs/).
 
 The guide was authored by
-[Heidi Vanparys](https://github.com/heidivanparys) of KDS (DK), supported by
-[Tobias Spears](https://github.com/BoltAlongTornado) (CA),
+[Heidi Vanparys](https://github.com/heidivanparys) (DK), supported by
+[Tobias Spears](https://github.com/sptws001) (CA),
 [Magnus Karge](https://github.com/magnusKarge) (NO), and
 [Peter Parslow](https://github.com/PeterParslow) (GB).
 
