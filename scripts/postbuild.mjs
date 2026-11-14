@@ -12,7 +12,7 @@ const DATA_EXTENSIONS = new Set([
 ])
 
 const dist = join(process.cwd(), 'dist')
-const listPath = join(process.cwd(), '_data', 'redirects.yml')
+const listPath = join(process.cwd(), 'migrate', 'redirects.yml')
 const redirects = parse(readFileSync(listPath, 'utf8'))
 // jekyll-redirect-from page-level entries (front matter in the legacy site)
 redirects.push({ from: '/transforms/', to: '/resources/' })

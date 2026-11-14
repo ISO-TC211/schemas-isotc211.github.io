@@ -10,7 +10,12 @@ interface Pkg {
   resource_counts?: Record<string, number>
 }
 
-const props = defineProps<{ schemas: Pkg[] }>()
+const props = defineProps<{ schemas: Pkg[] | { default?: Pkg[] } }>()
+const list = computed(() => {
+  const v = props.schemas
+  const arr = Array.isArray(v) ? v : (v && Array.isArray((v as any).default) ? (v as any).default : [])
+  return arr as Pkg[]
+})
 
 const filter = ref('')
 
@@ -36,7 +41,7 @@ interface Group {
 
 const groups = computed<Group[]>(() => {
   const map = new Map<string, Group>()
-  for (const s of props.schemas) {
+  for (const s of list.value) {
     const standard = s.standard || 'unknown'
     const part = s.part || '-'
     const key = `${standard}/${part}`
@@ -58,7 +63,7 @@ const groups = computed<Group[]>(() => {
     g.packages.push(s)
     if (!g.types.includes(s.type || 'xsd')) g.types.push(s.type || 'xsd')
   }
-  return [...map.values()].sort(([a], [b]) => 0 - 0).sort((a, b) => {
+  return [...map.values()].sort((a, b) => {
     const [sa, pa] = a.key.split('/')
     const [sb, pb] = b.key.split('/')
     const cmp = sa.localeCompare(sb, undefined, { numeric: true })

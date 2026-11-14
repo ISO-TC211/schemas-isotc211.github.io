@@ -14,6 +14,12 @@ const postPath = (post: (typeof posts)[number]) => {
   return `/update/${yyyy}/${mm}/${dd}/${post.id.replace(/^\d{4}-\d{2}-\d{2}-/, '')}.html`
 }
 
+const excerpt = (body: string) => {
+  const first = body.split('\n\n')[0] ?? ''
+  const plain = first.replace(/[*_`>[]()#]/g, '').replace(/\s+/g, ' ').trim()
+  return plain.length > 200 ? plain.slice(0, 200).trimEnd() + '…' : plain
+}
+
 const formatDate = (d: Date) =>
   d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
 ---
@@ -30,6 +36,7 @@ const formatDate = (d: Date) =>
           <a href={postPath(post)} class="blog-item">
             <div class="blog-item__date">{formatDate(post.data.date)}</div>
             <h2 class="blog-item__title">{post.data.title}</h2>
+            {excerpt(post.body) && <p class="blog-item__excerpt">{excerpt(post.body)}</p>}
             <span class="blog-item__arrow">
               Read more
               <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>

@@ -14,7 +14,7 @@ const standards = resourcesIndex.standards
         validation rules, example instances, codelist dictionaries, and download
         packages.
       </p>
-      <ResourceCatalog client:only="vue" :standards={standards} />
+      <ResourceCatalog client:load standards={standards} />
     </div>
   </section>
 </SiteLayout>
