@@ -1,0 +1,6 @@
+@import "@isotc211/astro-ui/theme.css";
+@import "@isotc211/astro-ui/components.css";
+@source "../node_modules/@isotc211/astro-ui";
+@source "../**/*.{astro,md,vue}";
+@import "./schemas.css";
+@import "./docs.css";
