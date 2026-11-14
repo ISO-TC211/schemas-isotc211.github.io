@@ -1,0 +1,59 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro'
+import codelists from '../../../data/codelists-index.json'
+
+interface Codelist {
+  id: string
+  name: string
+  description?: string
+  definition?: string
+  values?: unknown[]
+}
+
+const esc = (s: unknown) =>
+  String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+const truncate = (str: string, max: number) => (str.length > max ? `${str.slice(0, max - 3)}...` : str)
+const catalogue = codelists as Codelist[]
+const slug = (id: string) => id.replace(/_/g, '-')
+---
+
+<SiteLayout title="ISO/TC 211 Codelist Catalogues">
+  <section class="page-section">
+    <div class="page-section__inner">
+      <h1 class="page-section__title">ISO/TC 211 Codelist Catalogues</h1>
+      <p class="page-section__desc">
+        Canonical codelist definitions for all ISO/TC 211 standards.
+        Source: <a href="/resources/codelists/codelists.xml">codelists.xml</a>
+      </p>
+      <div class="cl-uri-box">
+        <span class="cl-uri-box__label">Canonical URL pattern</span>
+        <code class="cl-uri-box__value">https://schemas.isotc211.org/resources/codelists/codelists.xml#<em>{'{CodelistId}'}</em></code>
+      </div>
+      <div class="cl-table-wrap">
+        <table class="cl-table">
+          <thead>
+            <tr>
+              <th>Codelist</th>
+              <th>Identifier</th>
+              <th>Description</th>
+              <th>Values</th>
+            </tr>
+          </thead>
+          <tbody>
+            {catalogue.map((cl) => {
+              const desc = cl.description || cl.definition || ''
+              return (
+                <tr class="cl-row">
+                  <td class="cl-row__name"><a href={`/resources/codelists/${slug(cl.id)}/`}>{cl.name}</a></td>
+                  <td class="cl-row__id"><code>{cl.id}</code></td>
+                  <td class="cl-row__desc">{esc(truncate(desc, 80))}</td>
+                  <td class="cl-row__count">{cl.values?.length ?? 0}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

@@ -1,0 +1,119 @@
+---
+/** Port of SchemaSite::HubPage — namespace landing pages for XSD and JSON. */
+import SiteLayout from '../../../../../layouts/SiteLayout.astro'
+import { Package, moduleVersions, urlPath, type ModuleVersion } from '../../../../../lib/schema-site/models'
+import schemasIndex from '../../../../../data/schemas-index.json'
+import type { PackageAttrs } from '../../../../../lib/schema-site/models'
+
+interface Props {
+  pkg: Package
+  mv: ModuleVersion
+  multiPart: boolean
+}
+
+export async function getStaticPaths() {
+  const index = schemasIndex as PackageAttrs[]
+  const packages = index.map((a) => new Package(a))
+  const partsByStandard = new Map<string, Set<string>>()
+  for (const p of packages) {
+    const set = partsByStandard.get(p.standard!) ?? new Set<string>()
+    set.add(p.part)
+    partsByStandard.set(p.standard!, set)
+  }
+  const multiPart = new Set([...partsByStandard.entries()].filter(([, s]) => s.size > 1).map(([s]) => s))
+
+  const hubPaths = new Set<string>()
+  const paths = []
+  for (const pkg of packages.filter((p) => p.hasSpa)) {
+    for (const mv of pkg.moduleVersions()) {
+      if (hubPaths.has(moduleVersions(mv).hubPath)) continue
+      hubPaths.add(moduleVersions(mv).hubPath)
+      const seg = moduleVersions(mv).hubPath.replace(/^\//, '').replace(/\/$/, '').split('/')
+      paths.push({
+        params: { standard: seg[0], part: seg[1], module: seg[2], version: seg[3] },
+        props: { pkg, mv, multiPart: multiPart.has(mv.standard) },
+      })
+    }
+  }
+  return paths
+}
+
+const { pkg, mv, multiPart } = Astro.props
+const { partLabel, namespaceUri } = moduleVersions(mv)
+const esc = (s: unknown) =>
+  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+const standardUrl = multiPart || mv.part === '-' ? `/${mv.standard}/` : `/${mv.standard}/${mv.part}/`
+const standardLabel = multiPart || mv.part === '-' ? `ISO ${mv.standard}` : `ISO ${mv.standard}${mv.part}`
+
+const schemaFiles = mv.json
+  ? pkg.filePaths.filter((p) => p.endsWith('.json')).map((p) => ({ name: p.split('/').pop()!, path: urlPath(p) }))
+  : pkg.xsdPaths
+      .filter((p) => p.includes(`/${mv.moduleName}/`) && p.endsWith(`/${mv.moduleName}.xsd`))
+      .map((p) => ({ name: p.split('/').pop()!, path: urlPath(p) }))
+
+let browseHint = ''
+if (pkg.hasSpa && pkg.browsePath) {
+  const allModules = [...new Set(pkg.moduleVersions().map((m) => m.moduleName))].sort()
+  const others = allModules.filter((m) => m !== mv.moduleName)
+  browseHint = others.length
+    ? ` (including ${others[0]}${others.length > 1 ? ` and ${others.length - 1} more` : ''})`
+    : ''
+}
+const base = Astro.site ? String(Astro.site).replace(/\/$/, '') : 'https://schemas.isotc211.org'
+---
+
+<SiteLayout title={`${mv.moduleName} namespace`}>
+  <section class="page-section">
+    <div class="page-section__inner">
+      <div class="hub-header">
+        <span class="hub-header__prefix">{mv.moduleName}</span>
+        <h1 class="hub-header__uri">{namespaceUri}</h1>
+      </div>
+      <dl class="hub-details">
+        <dt>Standard</dt>
+        <dd><a href={standardUrl}>{standardLabel}</a></dd>
+        <dt>Part</dt>
+        <dd>{partLabel}</dd>
+        <dt>Module</dt>
+        <dd><code>{mv.moduleName}</code></dd>
+        <dt>Version</dt>
+        <dd><code>{mv.version}</code></dd>
+        <dt>Package</dt>
+        <dd>{pkg.title}</dd>
+        <dt>Status</dt>
+        <dd><span class={`badge badge--${pkg.status}`}>{esc(pkg.status)}</span></dd>
+      </dl>
+
+      {schemaFiles.length > 0 && (
+        <>
+          <h2 class="doc-section__title">Schema locations</h2>
+          <p class="doc-section__desc">
+            The normative {mv.json ? 'JSON' : 'XML'} schema files for this namespace:
+          </p>
+          <ul class="hub-xsd-list">
+            {schemaFiles.map((f) => (
+              <li>
+                <a href={`/${f.path}`}>{f.name}</a>
+                <span class="hub-xsd-url">{base}/{f.path}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {pkg.hasSpa && pkg.browsePath && (
+        <div class="hub-browse">
+          <a href={`/${urlPath(pkg.browsePath)}`} class="schema-card__browse" style="font-size:1rem;">
+            Browse interactive schema →
+          </a>
+          <p class="doc-section__desc" style="margin-top:0.75rem;">
+            Opens the schema browser for package <code>{pkg.name}</code>, covering{' '}
+            {new Set(pkg.moduleVersions().map((m) => m.moduleName)).size}
+            module{new Set(pkg.moduleVersions().map((m) => m.moduleName)).size === 1 ? '' : 's'}{browseHint}.
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+</SiteLayout>

@@ -1,0 +1,140 @@
+---
+/**
+ * Port of SchemaSite::StandardPage + StandardRootPage.
+ * /{std}/            — multi-part root (part cards) OR single-part standard page
+ * /{std}/-{n}/       — part page for multi-part standards
+ * /{std}/{part}/     — part page (non "-N" parts)
+ */
+import SiteLayout from '../layouts/SiteLayout.astro'
+import ResourcesSection from '../components/ResourcesSection.astro'
+import PackageCard from '../components/PackageCard.astro'
+import { Package, statusOrder, type PackageAttrs, type ResourceFile } from '../lib/schema-site/models'
+import schemasIndex from '../data/schemas-index.json'
+import resourcesIndex from '../data/resources-index.json'
+
+interface ResourceIndexJson {
+  standards: Record<string, Record<string, ResourceFile[]>>
+}
+
+export async function getStaticPaths() {
+  const index = schemasIndex as PackageAttrs[]
+  const standards = (resourcesIndex as ResourceIndexJson).standards ?? {}
+  const packages = index.map((a) => new Package(a))
+
+  const groups = new Map<string, { standard: string; part: string; pkgs: Package[] }>()
+  for (const p of packages) {
+    const key = `${p.standard}/${p.part}`
+    if (!groups.has(key)) groups.set(key, { standard: p.standard!, part: p.part, pkgs: [] })
+    groups.get(key)!.pkgs.push(p)
+  }
+  const partsByStandard = new Map<string, Set<string>>()
+  for (const p of packages) {
+    const set = partsByStandard.get(p.standard!) ?? new Set<string>()
+    set.add(p.part)
+    partsByStandard.set(p.standard!, set)
+  }
+  const multiPart = new Set([...partsByStandard.entries()].filter(([, s]) => s.size > 1).map(([s]) => s))
+
+  const paths = []
+  for (const [, { standard, part, pkgs }] of groups) {
+    const dir =
+      part === '-' && multiPart.has(standard) ? `${standard}/-` : part === '-' ? standard : `${standard}/${part}`
+    paths.push({
+      params: { standardPart: dir },
+      props: {
+        standard,
+        part,
+        pkgs,
+        resources: filterResources(standards[standard] ?? {}, standard, part, pkgs),
+        multiPart: multiPart.has(standard),
+      },
+    })
+  }
+  for (const standard of multiPart) {
+    const pkgs = packages.filter((p) => p.standard === standard)
+    paths.push({
+      params: { standardPart: standard },
+      props: { standard, pkgs, resources: standards[standard] ?? {}, multiPart: true, isRoot: true },
+    })
+  }
+  return paths
+
+  function filterResources(
+    stdResources: Record<string, ResourceFile[]>,
+    standard: string,
+    part: string,
+    pkgs: Package[]
+  ): Record<string, ResourceFile[]> {
+    const hasOnlyJson = pkgs.every((p) => p.json)
+    const out: Record<string, ResourceFile[]> = {}
+    for (const [cat, files] of Object.entries(stdResources)) {
+      const relevant = files.filter((f) => {
+        const m = f.path.match(new RegExp(`^(?:json/)?${standard}/(-\\d+)/`))
+        if (m) return m[1] === part && (!hasOnlyJson || cat === 'examples_json')
+        return hasOnlyJson ? cat === 'examples_json' : true
+      })
+      if (relevant.length) out[cat] = relevant
+    }
+    return out
+  }
+}
+
+const { standard, part = '', pkgs, resources, multiPart, isRoot } = Astro.props as {
+  standard: string
+  part: string
+  pkgs: Package[]
+  resources: Record<string, ResourceFile[]>
+  multiPart: boolean
+  isRoot?: boolean
+}
+
+const sorted = [...pkgs].sort((a, b) => statusOrder(a.status) - statusOrder(b.status))
+const rootTitle = `ISO ${standard}`
+const partTitle = part === '-' ? `ISO ${standard}` : `ISO ${standard} Part ${part.replace(/-/g, '')}`
+const rootParts = [...new Map(pkgs.map((p) => [p.part, pkgs])).entries()]
+  .map(([p, list]) => [p, list] as const)
+  .sort(([a], [b]) => (a === '-' ? -1 : b === '-' ? 1 : a.localeCompare(b, undefined, { numeric: true })))
+---
+
+<SiteLayout title={isRoot ? rootTitle : partTitle}>
+  <section class="page-section">
+    <div class="page-section__inner">
+      {isRoot ? (
+        <>
+          <h1 class="page-section__title">{rootTitle}</h1>
+          <p class="page-section__desc">This standard consists of multiple parts.</p>
+          <div style="display:grid;gap:0.75rem;grid-template-columns:1fr;">
+            {rootParts.map(([p, list]) => {
+              const label = p === '-' ? 'Standalone' : `Part ${p.replace(/-/g, '')}`
+              const url = p === '-' ? `/${standard}/-/` : `/${standard}/${p}/`
+              const types = [...new Set(list.map((x) => x.type))].sort()
+              return (
+                <a href={url} class="std-card">
+                  <div class="std-card__number">{label}</div>
+                  <div class="std-card__body">
+                    <span class="std-card__packages">{list.length} package{list.length !== 1 ? 's' : ''}</span>
+                    <div class="std-card__types">
+                      {types.map((t) =>
+                        t === 'json' ? <span class="badge badge--json">JSON</span> : <span class="badge badge--current">XSD</span>
+                      )}
+                    </div>
+                  </div>
+                  <svg class="std-card__arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                </a>
+              )
+            })}
+          </div>
+          <ResourcesSection resources={resources} detailed={false} />
+        </>
+      ) : (
+        <>
+          <h1 class="page-section__title">{partTitle}</h1>
+          <div class="schema-cards">
+            {sorted.map((pkg) => <PackageCard pkg={pkg} />)}
+          </div>
+          <ResourcesSection resources={resources} />
+        </>
+      )}
+    </div>
+  </section>
+</SiteLayout>

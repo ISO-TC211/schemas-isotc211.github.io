@@ -36,8 +36,13 @@ function loadManifest(file) {
 }
 
 function matches(entry, path) {
-  if (entry.endsWith('/**')) return path.startsWith(entry.slice(0, -2))
-  return entry === path
+  const anchored = !entry.startsWith('**/')
+  const e = anchored ? entry : entry.slice(3)
+  if (e.endsWith('/**')) {
+    const prefix = e.slice(0, -2)
+    return anchored ? path.startsWith(prefix) : path.includes(prefix)
+  }
+  return anchored ? path === e : path.includes(e)
 }
 
 function classify(list, path) {

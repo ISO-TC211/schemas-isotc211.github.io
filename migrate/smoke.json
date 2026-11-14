@@ -1,0 +1,32 @@
+{
+  "forbidden": [
+    "/schemas/19"
+  ],
+  "required": {
+    "nav-header": "id=\"nav-header\"",
+    "fouc": "iso-tc211-theme",
+    "skip": "skip-link"
+  },
+  "excludePaths": [
+    "**/browse/**",
+    "transforms/**",
+    "19155/gpi/**",
+    "Resources/**",
+    "19115/resources/Codelist/**",
+    "19115/resources/Schematron/**",
+    "19115/resources/namespaceInformationAndTools/**",
+    "19139/-/resources/**",
+    "19157/resources/Codelists/**",
+    "site/**",
+    "update/**",
+    "award/**",
+    "press/**",
+    "docs/**",
+    "news/index.html",
+    "docs/index.html",
+    "19115/resources/Schematron/index.html",
+    "19157/resources/Codelists/index.html",
+    "19115/resources/schematron/index.html",
+    "19157/resources/codelists/index.html"
+  ]
+}

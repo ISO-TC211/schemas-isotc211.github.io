@@ -1,0 +1,58 @@
+---
+/** Port of SchemaSite::HtmlHelper#render_resources (models.rb). */
+import { RESOURCE_CATEGORIES, urlPath } from '../lib/schema-site/models'
+
+interface ResourceFile {
+  name: string
+  path: string
+  description?: string
+}
+
+interface Props {
+  resources?: Record<string, ResourceFile[]>
+  detailed?: boolean
+  title?: string
+}
+
+const { resources, detailed = true, title = 'Resources' } = Astro.props
+
+const esc = (s: unknown) =>
+  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+const sections = []
+if (resources && Object.keys(resources).length) {
+  for (const [category, config] of Object.entries(RESOURCE_CATEGORIES)) {
+    const files = resources[category]
+    if (!files || !files.length) continue
+    sections.push({ category, config, files })
+  }
+}
+---
+
+{sections.length > 0 && (
+  <div class="resources-section">
+    <h2 class="resources-section__title">{title}</h2>
+    {sections.map(({ config, files }) => (
+      <div class="res-category">
+        <div class="res-category__header">
+          <span class={`res-category__icon res-category__icon--${config.color}`}>
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" set:html={config.iconSvg} />
+          </span>
+          <span class="res-category__title" set:html={config.label} />
+          <span class="res-group__count">{files.length} file{files.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="res-list">
+          {files.map((f) => (
+            <a href={`/${urlPath(f.path)}`} class="res-item">
+              <span class={`res-item__dot res-item__dot--${config.color}`} />
+              <span class="res-item__name">{f.name}</span>
+              {detailed && f.description && f.description !== f.name && (
+                <span class="res-item__desc">{f.description}</span>
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+)}

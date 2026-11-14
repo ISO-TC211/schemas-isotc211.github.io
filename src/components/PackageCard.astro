@@ -1,0 +1,52 @@
+---
+/** Port of SchemaSite::StandardPage#render_card (schema_pages_generator.rb). */
+import { statusLabel, urlPath, type Package } from '../lib/schema-site/models'
+
+interface Props {
+  pkg: Package
+}
+
+const { pkg } = Astro.props
+const badgeClass = `badge--${pkg.status || 'historical'}`
+const badge = statusLabel(pkg.status)
+const isJson = pkg.json
+const fileExt = isJson ? 'JSON' : 'XSD'
+const files = isJson ? pkg.filePaths : pkg.xsdPaths
+const canBrowse = pkg.hasSpa && !!pkg.browsePath
+const browseUrl = pkg.browsePath ? urlPath(pkg.browsePath) : ''
+const esc = (s: unknown) =>
+  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+---
+
+<div class="schema-card" onclick={canBrowse && pkg.browsePath ? `window.location='/${esc(browseUrl)}'` : undefined}>
+  <div class="schema-card__top">
+    <span class="schema-card__name">{pkg.title}</span>
+    <div class="schema-card__badges">
+      {isJson && <span class="badge badge--json">JSON</span>}
+      <span class={`badge ${badgeClass}`}>{badge}</span>
+    </div>
+  </div>
+  <p class="schema-card__desc">{pkg.description}</p>
+  <div class="schema-card__version">Version <code>{pkg.version}</code></div>
+  <div class="schema-card__actions">
+    {canBrowse && (
+      <a href={`/${browseUrl}`} class="schema-card__browse" onclick="event.stopPropagation()">
+        Browse schema
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
+    )}
+    {files.length === 1 ? (
+      <a href={`/${urlPath(files[0])}`} class="schema-card__download" onclick="event.stopPropagation()" title={`Download ${fileExt}`}>
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+        {fileExt}
+      </a>
+    ) : files.length > 0 ? (
+      <div class="schema-card__files" onclick="event.stopPropagation()">
+        <span class="schema-card__files-label">{fileExt} files:</span>
+        {files.map((f) => (
+          <a href={`/${urlPath(f)}`} onclick="event.stopPropagation()">{f.split('/').pop()}</a>
+        ))}
+      </div>
+    ) : null}
+  </div>
+</div>
