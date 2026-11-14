@@ -1,0 +1,111 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro'
+import SchemaCatalog from '../islands/SchemaCatalog.vue'
+import schemasIndex from '../data/schemas-index.json'
+const schemas = schemasIndex
+---
+<SiteLayout title="Schemas">
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-section__inner">
+    <div class="hero-section__kicker">
+      <span class="dot"></span>
+      ISO/TC 211 Schemas
+    </div>
+    <h1 class="hero-section__title">Schema Repository</h1>
+    <p class="hero-section__desc">
+      The authoritative repository of XML and JSON schema representations for
+      <a href="https://committee.iso.org/home/tc211">ISO/TC&nbsp;211</a>
+      Geographic information/Geomatics standards.
+      Browse interactive documentation for each schema, or download the files directly.
+    </p>
+    <div class="url-box">
+      <div class="url-box__item--dark url-box__item">
+        <p class="url-box__label">XML Schema location URL pattern</p>
+        <code>https://schemas.isotc211.org/<span class="dim">&#123;Standard&#125;</span>/<span class="dim">&#123;Part&#125;</span>/<span class="dim">&#123;Prefix&#125;</span>/<span class="dim">&#123;Version&#125;</span></code>
+      </div>
+      <div class="url-box__item--dark url-box__item">
+        <p class="url-box__label">JSON Schema location URL pattern</p>
+        <code>https://schemas.isotc211.org/json/<span class="dim">&#123;Standard&#125;</span>/<span class="dim">&#123;Part&#125;</span>/<span class="dim">&#123;Module&#125;</span>/<span class="dim">&#123;Version&#125;</span></code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Schema Cards Section -->
+<section class="schemas-section">
+  <div class="schemas-section__inner">
+    <div class="filter-bar">
+      <input id="schema-filter" type="text" class="filter-bar__input" placeholder="Filter schemas by name, standard, or version...">
+      <span id="schema-count" class="filter-bar__count"></span>
+    </div>
+    <SchemaCatalog client:load :schemas=&#123;schemas&#125; />
+  </div>
+</section>
+
+<!-- Resources Section -->
+<section class="resources-section">
+  <div class="resources-section__inner">
+    <h2 class="resources-section__title">Resources</h2>
+    <p class="resources-section__desc">
+      Supporting resources for ISO/TC 211 implementers: codelist definitions,
+      example instances, validation rules, and transform stylesheets.
+    </p>
+    <div class="resource-cards">
+      <a href="/resources/codelists/" class="resource-card">
+        <div class="resource-card__icon resource-card__icon--teal">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+        </div>
+        <h3 class="resource-card__title">Codelist Catalogues</h3>
+        <p class="resource-card__desc">70 canonical codelist definitions for all TC 211 standards, with browseable HTML pages and stable dereferenceable URIs.</p>
+        <span class="resource-card__link">Browse codelists</span>
+      </a>
+
+      <a href="/resources/?type=examples_xml" class="resource-card">
+        <div class="resource-card__icon resource-card__icon--blue">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+        </div>
+        <h3 class="resource-card__title">Example Instances</h3>
+        <p class="resource-card__desc">XML and JSON example files demonstrating correct usage of each schema module.</p>
+        <span class="resource-card__link">Browse examples</span>
+      </a>
+
+      <a href="/resources/?type=transforms" class="resource-card">
+        <div class="resource-card__icon resource-card__icon--orange">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+        </div>
+        <h3 class="resource-card__title">XSLT Transforms</h3>
+        <p class="resource-card__desc">Stylesheets for converting between schema versions, generating HTML, and reordering metadata records.</p>
+        <span class="resource-card__link">Browse transforms</span>
+      </a>
+
+      <a href="/resources/?type=schematron" class="resource-card">
+        <div class="resource-card__icon resource-card__icon--purple">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+        </div>
+        <h3 class="resource-card__title">Schematron Rules</h3>
+        <p class="resource-card__desc">Validation rules for constraints beyond what XSD can express, alongside each schema module.</p>
+        <span class="resource-card__link">Browse rules</span>
+      </a>
+
+      <a href="/resources/?type=bundles" class="resource-card">
+        <div class="resource-card__icon resource-card__icon--green">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+        </div>
+        <h3 class="resource-card__title">Download Packages</h3>
+        <p class="resource-card__desc">ZIP bundles per schema module for offline use, containing XSD files, examples, and documentation.</p>
+        <span class="resource-card__link">Browse packages</span>
+      </a>
+
+      <a href="https://github.com/ISO-TC211/schemas" class="resource-card">
+        <div class="resource-card__icon resource-card__icon--slate">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+        </div>
+        <h3 class="resource-card__title">Raw Files on GitHub</h3>
+        <p class="resource-card__desc">Browse the complete repository of schema files, resources, and build configuration on GitHub.</p>
+        <span class="resource-card__link">Open repository</span>
+      </a>
+    </div>
+  </div>
+</section>
+</SiteLayout>

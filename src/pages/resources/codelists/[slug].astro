@@ -1,0 +1,77 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro'
+import codelists from '../../../data/codelists-index.json'
+
+interface CodelistValue {
+  id: string
+  identifier: string
+  name?: string
+  definition?: string
+  description?: string
+}
+interface Codelist {
+  id: string
+  name: string
+  description?: string
+  definition?: string
+  values?: CodelistValue[]
+}
+
+export function getStaticPaths() {
+  const catalogue = codelists as Codelist[]
+  return catalogue.map((cl) => ({ params: { slug: cl.id.replace(/_/g, '-') }, props: { cl } }))
+}
+
+const { cl } = Astro.props
+const esc = (s: unknown) =>
+  String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+const truncate = (str: string, max: number) => (str.length > max ? `${str.slice(0, max - 3)}...` : str)
+---
+
+<SiteLayout title={cl.name}>
+  <section class="page-section">
+    <div class="page-section__inner">
+      <div class="cl-breadcrumb">
+        <a href="/resources/codelists/">Codelist Catalogues</a>
+        <span class="cl-breadcrumb__sep">&rsaquo;</span>
+        <span>{cl.name}</span>
+      </div>
+      <h1 class="page-section__title">{cl.name}</h1>
+      <dl class="cl-detail">
+        <dt>Identifier</dt>
+        <dd><code class="cl-detail__id">{cl.id}</code></dd>
+        {cl.definition && <><dt>Definition</dt><dd>{cl.definition}</dd></>}
+        {cl.description && cl.description !== cl.definition && <><dt>Description</dt><dd>{cl.description}</dd></>}
+        <dt>Canonical URI</dt>
+        <dd class="cl-detail__uri">
+          <code>https://schemas.isotc211.org/resources/codelists/codelists.xml#{cl.id}</code>
+        </dd>
+        <dt>Defined values</dt>
+        <dd>{cl.values?.length ?? 0} codes</dd>
+      </dl>
+      <div class="cl-table-wrap">
+        <table class="cl-table">
+          <thead>
+            <tr>
+              <th>Value</th>
+              <th>Description</th>
+              <th>Fragment ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(cl.values ?? []).map((v) => {
+              const desc = v.description || v.definition || ''
+              return (
+                <tr class="cl-row">
+                  <td class="cl-row__name"><code>{v.identifier}</code></td>
+                  <td class="cl-row__desc">{esc(truncate(desc, 120))}</td>
+                  <td class="cl-row__id"><code>{v.id}</code></td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

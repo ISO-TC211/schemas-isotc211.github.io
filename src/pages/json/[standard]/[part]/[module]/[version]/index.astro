@@ -1,0 +1,32 @@
+---
+import SiteLayout from '../../../../../../layouts/SiteLayout.astro'
+import HubPage from '../../../../../../components/HubPage.astro'
+import { Package, moduleVersions } from '../../../../../../lib/schema-site/models'
+import schemasIndex from '../../../../../../data/schemas-index.json'
+import type { PackageAttrs } from '../../../../../../lib/schema-site/models'
+
+export async function getStaticPaths() {
+  const index = schemasIndex as PackageAttrs[]
+  const packages = index.map((a) => new Package(a))
+  const hubPaths = new Set<string>()
+  const paths = []
+  for (const pkg of packages.filter((p) => p.hasSpa)) {
+    for (const mv of pkg.moduleVersions()) {
+      const hp = moduleVersions(mv).hubPath
+      if (!hp.startsWith('/json/') || hubPaths.has(hp)) continue
+      hubPaths.add(hp)
+      const seg = hp.replace(/^\//, '').replace(/\/$/, '').split('/')
+      // seg = ['json', standard, part, module, version]
+      paths.push({
+        params: { standard: seg[1], part: seg[2], module: seg[3], version: seg[4] },
+        props: { pkg, mv, multiPart: true },
+      })
+    }
+  }
+  return paths
+}
+
+const { pkg, mv, multiPart } = Astro.props
+---
+
+<HubPage pkg={pkg} mv={mv} multiPart={multiPart} />

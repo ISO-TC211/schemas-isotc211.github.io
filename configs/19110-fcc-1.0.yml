@@ -1,0 +1,115 @@
+---
+metadata:
+  name: 19110-fcc-1.0
+  version: 1.0.0
+  title: ISO 19110 — Feature Cataloguing (fcc v1.0)
+  description: Feature catalogue XML schema (legacy).
+  license: ISO
+  authors:
+  - name: ISO/TC 211
+  links:
+  - name: Homepage
+    url: https://schemas.isotc211.org
+  - name: Repository
+    url: https://github.com/ISO-TC211/schemas-isotc211.github.io
+  - name: ISO/TC 211
+    url: https://www.isotc211.org
+build:
+  xsd_mode: include_all
+  resolution_mode: resolved
+  serialization_format: marshal
+files:
+- "../schemas/19110/-/fcc/1.0/abstract.xsd"
+- "../schemas/19110/-/fcc/1.0/fcc.xsd"
+schema_location_mappings:
+- from: "^http://schemas\\.opengis\\.net/gml/3\\.2\\.1/(.+\\.xsd)$"
+  to: "../schemas/19136/-/gml/1.0/\\1"
+  pattern: true
+- from: http://schemas.opengis.net/gml/3.1.1/base/gml.xsd
+  to: "../schemas/19136/-/gml/1.0/gml.xsd"
+  pattern: false
+- from: "^http://schemas\\.opengis\\.net/gml/3\\.1\\.1/(?:base/)?(.+\\.xsd)$"
+  to: "../schemas/19136/-/gml/1.0/\\1"
+  pattern: true
+- from: http://www.w3.org/1999/xlink.xsd
+  to: "../vendor_schemas/xlink/xlinks.xsd"
+  pattern: false
+- from: https://www.w3.org/1999/xlink.xsd
+  to: "../vendor_schemas/xlink/xlinks.xsd"
+  pattern: false
+- from: http://www.w3.org/2001/xml.xsd
+  to: "../vendor_schemas/w3c/xml.xsd"
+  pattern: false
+- from: "^https://schemas\\.isotc211\\.org/schemas/(.+\\.xsd)$"
+  to: "../schemas/\\1"
+  pattern: true
+- from: "^https://schemas\\.isotc211\\.org/19110/fcc/(.+\\.xsd)$"
+  to: "../schemas/19110/-/fcc/\\1"
+  pattern: true
+- from: "^https://schemas\\.isotc211\\.org/19110/gfc/(.+\\.xsd)$"
+  to: "../schemas/19110/-/gfc/\\1"
+  pattern: true
+- from: "^https://schemas\\.isotc211\\.org/19111/rbc/(.+\\.xsd)$"
+  to: "../schemas/19111/-/rbc/\\1"
+  pattern: true
+- from: "^https://schemas\\.isotc211\\.org/19111/rce/(.+\\.xsd)$"
+  to: "../schemas/19111/-/rce/\\1"
+  pattern: true
+- from: "^https://schemas\\.isotc211\\.org/19155/gpi/(.+\\.xsd)$"
+  to: "../schemas/19155/-/gpi/\\1"
+  pattern: true
+- from: "^https://schemas\\.isotc211\\.org/19165/gpm/(.+\\.xsd)$"
+  to: "../schemas/19165/-/gpm/\\1"
+  pattern: true
+- from: "^https://schemas\\.isotc211\\.org/19119/srv/(.+\\.xsd)$"
+  to: "../schemas/19119/-/srv/\\1"
+  pattern: true
+- from: "^https://schemas\\.isotc211\\.org/(.+\\.xsd)$"
+  to: "../schemas/\\1"
+  pattern: true
+- from: "^http://schemas\\.opengis\\.net/sensorML/2\\.0/(.+\\.xsd)$"
+  to: "../vendor_schemas/ogc/sensorML/2.0/\\1"
+  pattern: true
+- from: "^http://schemas\\.opengis\\.net/sweCommon/2\\.0/(.+\\.xsd)$"
+  to: "../vendor_schemas/ogc/sweCommon/2.0/\\1"
+  pattern: true
+namespace_mappings:
+- prefix: xs
+  uri: http://www.w3.org/2001/XMLSchema
+- prefix: gml
+  uri: http://www.opengis.net/gml/3.2
+- prefix: xlink
+  uri: http://www.w3.org/1999/xlink
+appearance:
+  logos:
+    square:
+      light:
+        url: https://www.isotc211.org/assets/iso-red.svg
+      dark:
+        url: https://www.isotc211.org/assets/iso-red.svg
+    long:
+      light:
+        url: https://www.isotc211.org/assets/iso-red.svg
+      dark:
+        url: https://www.isotc211.org/assets/iso-red.svg
+    icon:
+      light:
+        url: https://www.isotc211.org/assets/iso-red.svg
+      dark:
+        url: https://www.isotc211.org/assets/iso-red.svg
+    lutaml_logo:
+      light:
+        url: https://www.isotc211.org/assets/iso-red.svg
+      dark:
+        url: https://www.isotc211.org/assets/iso-red.svg
+  colors:
+    primary: "#0061ad"
+    primary_light: "#3385d6"
+    primary_dark: "#003f73"
+    accent: "#e3000f"
+    background_primary: "#ffffff"
+    background_secondary: "#f8fafc"
+  typography:
+    font_family: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
+    mono_font_family: "'JetBrains Mono', 'Noto Sans Mono', Consolas, monospace"
+  subtitle: ISO/TC 211 Schemas

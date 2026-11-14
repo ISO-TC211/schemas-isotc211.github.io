@@ -1,0 +1,20 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro'
+import ResourceCatalog from '../../islands/ResourceCatalog.vue'
+import resourcesIndex from '../../data/resources-index.json'
+const standards = resourcesIndex.standards
+---
+
+<SiteLayout title="Resources">
+  <section class="page-section">
+    <div class="page-section__inner">
+      <h1 class="page-section__title">Resources</h1>
+      <p class="page-section__desc">
+        Supporting resources for ISO/TC 211 schemas: XSLT transforms, Schematron
+        validation rules, example instances, codelist dictionaries, and download
+        packages.
+      </p>
+      <ResourceCatalog client:only="vue" :standards={standards} />
+    </div>
+  </section>
+</SiteLayout>

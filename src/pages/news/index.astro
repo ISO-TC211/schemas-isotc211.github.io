@@ -1,0 +1,42 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro'
+import { getCollection } from 'astro:content'
+
+const posts = (await getCollection('news')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+)
+
+const postPath = (post: (typeof posts)[number]) => {
+  const d = post.data.date
+  const yyyy = d.getFullYear()
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `/update/${yyyy}/${mm}/${dd}/${post.id.replace(/^\d{4}-\d{2}-\d{2}-/, '')}.html`
+}
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
+---
+
+<SiteLayout title="News">
+  <div class="blog-page">
+    <div class="blog-page__inner">
+      <div class="section__header">
+        <span class="section__kicker">Latest</span>
+        <h1 class="section__title">News &amp; Articles</h1>
+      </div>
+      <div class="blog-list">
+        {posts.map((post) => (
+          <a href={postPath(post)} class="blog-item">
+            <div class="blog-item__date">{formatDate(post.data.date)}</div>
+            <h2 class="blog-item__title">{post.data.title}</h2>
+            <span class="blog-item__arrow">
+              Read more
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</SiteLayout>

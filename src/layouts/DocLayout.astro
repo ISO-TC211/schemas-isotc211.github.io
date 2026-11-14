@@ -1,0 +1,14 @@
+---
+/** Layout for guidance docs (AsciiDoc-converted Markdown). */
+import SiteLayout from './SiteLayout.astro'
+
+const { title } = Astro.props.frontmatter ?? {}
+---
+
+<SiteLayout title={title}>
+  <section class="page-section">
+    <div class="page-section__inner doc-content">
+      <slot />
+    </div>
+  </section>
+</SiteLayout>
