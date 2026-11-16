@@ -194,7 +194,7 @@
   .doc-callout code {
     background: rgba(255, 255, 255, 0.7);
   }
-  .doc-callout div.highlighter-rouge {
+  .doc-callout pre {
     margin: 0.75rem 0 0;
   }
 

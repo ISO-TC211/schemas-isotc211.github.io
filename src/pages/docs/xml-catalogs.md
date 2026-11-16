@@ -50,12 +50,15 @@ An XML catalog can be used to map:
 
 The sections below show concrete examples.
 
-> **Important**
->
-> An XML catalog maps to *local* copies of XML schema documents, which means
-> catalog files are not portable. Always adjust the local file paths in your
-> XML catalog so they correspond to the locations on your own file system.
-{: .doc-callout .doc-callout--important }
+<div class="doc-callout doc-callout--important">
+
+**Important**
+
+An XML catalog maps to *local* copies of XML schema documents, which means
+catalog files are not portable. Always adjust the local file paths in your
+XML catalog so they correspond to the locations on your own file system.
+
+</div>
 
 ## Mapping namespace URIs
 
@@ -64,8 +67,11 @@ A
 identifying an XML namespace to the physical location of a local copy of the
 schema document describing that namespace.
 
+<div class="doc-caption">
+
 **`uri` element**
-{: .doc-caption }
+
+</div>
 
 ```xml
 <uri name="xml_namespace_uri"
@@ -79,8 +85,11 @@ the corresponding XML schema document. The value of the `uri` attribute is
 typically expressed as a
 [file URI](https://www.rfc-editor.org/info/rfc8089).
 
+<div class="doc-caption">
+
 **XML instance document declaring namespaces**
-{: .doc-caption }
+
+</div>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -95,9 +104,12 @@ typically expressed as a
 </mdb:MD_Metadata>
 ```
 
+<div class="doc-caption">
+
 **XML schema document declaring and importing
 ([`xsd:import`](https://www.w3.org/TR/xmlschema-1/#element-import)) namespaces**
-{: .doc-caption }
+
+</div>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -114,21 +126,27 @@ typically expressed as a
 </schema>
 ```
 
-> **Note**
->
-> The example XML catalogs assume the following directory layout on the local
-> machine. Each subdirectory mirrors the structure of the original website.
->
-> ```text
-> C:\XMLschemas
-> +---schemas.isotc211.org
-> +---schemas.opengis.net
-> \---www.w3.org
-> ```
-{: .doc-callout .doc-callout--note }
+<div class="doc-callout doc-callout--note">
+
+**Note**
+
+The example XML catalogs assume the following directory layout on the local
+machine. Each subdirectory mirrors the structure of the original website.
+
+```text
+C:\XMLschemas
++---schemas.isotc211.org
++---schemas.opengis.net
+\---www.w3.org
+```
+
+</div>
+
+<div class="doc-caption">
 
 **XML catalog mapping XML namespace names to local copies of schema documents**
-{: .doc-caption }
+
+</div>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -157,34 +175,43 @@ A
 be used to map a URI identifying a schema location to the physical location of
 a local copy of that schema document.
 
-> **Note**
->
-> Actually, a
-> [`uri` element](https://www.xmlcatalogs.org/catalogs-1.1.html#s.uri) is
-> supposed to be used instead of a
-> [`system` element](https://www.xmlcatalogs.org/catalogs-1.1.html#s.system)
-> for this purpose, according to the
-> [XML catalog](https://www.xmlcatalogs.org/catalogs-1.1.html) specification.
-> However, XML tools in practice usually either use `system` element or (have
-> an option to) analyze both `uri` and `system` elements. The examples below
-> therefore use `system`, hereby also illustrating the difference in syntax
-> between `uri` and `system`. For maximum compatibility, both a `system` and
-> `uri` could be included in a catalog intended for working with different
-> tools.
-{: .doc-callout .doc-callout--note }
+<div class="doc-callout doc-callout--note">
+
+**Note**
+
+Actually, a
+[`uri` element](https://www.xmlcatalogs.org/catalogs-1.1.html#s.uri) is
+supposed to be used instead of a
+[`system` element](https://www.xmlcatalogs.org/catalogs-1.1.html#s.system)
+for this purpose, according to the
+[XML catalog](https://www.xmlcatalogs.org/catalogs-1.1.html) specification.
+However, XML tools in practice usually either use `system` element or (have
+an option to) analyze both `uri` and `system` elements. The examples below
+therefore use `system`, hereby also illustrating the difference in syntax
+between `uri` and `system`. For maximum compatibility, both a `system` and
+`uri` could be included in a catalog intended for working with different
+tools.
+
+</div>
+
+<div class="doc-caption">
 
 **`system` element**
-{: .doc-caption }
+
+</div>
 
 ```xml
 <system systemId="https://path/to/official/schema.xsd"
         uri="file:///path/to/local/copy/of/schema.xsd"/>
 ```
 
+<div class="doc-caption">
+
 **XML instance document with a
 [`xsi:schemaLocation`](https://www.w3.org/TR/xmlschema-1/#xsi_schemaLocation)
 attribute**
-{: .doc-caption }
+
+</div>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -206,10 +233,13 @@ attribute**
 </mdb:MD_Metadata>
 ```
 
+<div class="doc-caption">
+
 **XML schema document declaring and importing
 ([`xsd:import`](https://www.w3.org/TR/xmlschema-1/#element-import)) namespaces
 with a hint as to where the schema document may be found**
-{: .doc-caption }
+
+</div>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -228,8 +258,11 @@ with a hint as to where the schema document may be found**
 </schema>
 ```
 
+<div class="doc-caption">
+
 **XML catalog mapping schema locations**
-{: .doc-caption }
+
+</div>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -256,8 +289,11 @@ with a hint as to where the schema document may be found**
 Many ISO/TC 211 schemas reference the same core schemas. It is therefore
 suggested to have at least the following entries in an XML catalog.
 
+<div class="doc-caption">
+
 **XML catalog for commonly used XML schemas in the geospatial domain**
-{: .doc-caption }
+
+</div>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
